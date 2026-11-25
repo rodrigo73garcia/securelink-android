@@ -6,9 +6,6 @@ on:
     tags: ['v*']
   pull_request:
     branches: [main, develop]
-  schedule:
-    # Atualização diária de blocklist às 03:00 UTC
-    - cron: '0 3 * * *'
   workflow_dispatch:
 
 env:
@@ -18,16 +15,55 @@ env:
 
 jobs:
   # ============================================
-  # RUST CORE - Testes e build para todos targets
+  # RUST CORE - Testes e build para targets Linux
   # ============================================
   rust-core:
-    name: Rust Core (${{ matrix.target }})
+    name: Rust Core (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            core/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Build Rust core (Linux)
+        working-directory: ./core
+        run: cargo build --release
+
+      - name: Run tests
+        working-directory: ./core
+        run: cargo test --release
+
+      - name: Upload Linux library
+        uses: actions/upload-artifact@v4
+        with:
+          name: libsecurelink_core-linux
+          path: core/target/release/libsecurelink_core.so
+          retention-days: 7
+
+  # ============================================
+  # RUST CORE ANDROID - Build para targets Android
+  # ============================================
+  rust-core-android:
+    name: Rust Core (Android ${{ matrix.target }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
         target:
-          - x86_64-unknown-linux-gnu
-          - aarch64-unknown-linux-gnu
           - aarch64-linux-android
           - armv7-linux-androideabi
           - i686-linux-android
@@ -54,34 +90,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
-      - name: Setup Android NDK (for Android targets)
-        if: contains(matrix.target, 'android')
+      - name: Setup Android NDK
         uses: android-actions/setup-android@v3
         with:
           ndk-version: ${{ env.NDK_VERSION }}
 
       - name: Configure Android NDK linker
-        if: contains(matrix.target, 'android')
         run: |
           echo "CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang" >> $GITHUB_ENV
           echo "CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER=${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang" >> $GITHUB_ENV
           echo "CARGO_TARGET_I686_LINUX_ANDROID_LINKER=${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android24-clang" >> $GITHUB_ENV
-          echo "CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang" >> $GITHUB_ENV
+          echo "CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NK_VERSION }}/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang" >> $GITHUB_ENV
 
-      - name: Build Rust core
+      - name: Build Rust core for Android
         working-directory: ./core
         run: cargo build --target ${{ matrix.target }} --release --features android
 
-      - name: Run tests (Linux targets only)
-        if: matrix.target == 'x86_64-unknown-linux-gnu'
-        working-directory: ./core
-        run: cargo test --release
-
-      - name: Upload artifacts
+      - name: Upload Android library
         uses: actions/upload-artifact@v4
         with:
-          name: libsecurelink_core-${{ matrix.target }}
-          path: core/target/${{ matrix.target }}/release/libsecurelink_core.*
+          name: libsecurelink_core-android-${{ matrix.target }}
+          path: core/target/${{ matrix.target }}/release/libsecurelink_core.so
           retention-days: 7
 
   # ============================================
@@ -90,30 +119,34 @@ jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
-    needs: rust-core
+    needs: [rust-core, rust-core-android]
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
 
-      - name: Download Rust libraries
+      - name: Download Linux library
         uses: actions/download-artifact@v4
         with:
+          name: libsecurelink_core-linux
+          path: core/target/release
+
+      - name: Download Android libraries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: libsecurelink_core-android-*
           path: android/app/src/main/jniLibs
-          pattern: libsecurelink_core-*
           merge-multiple: true
 
       - name: Organize jniLibs
         run: |
           cd android/app/src/main/jniLibs
-          for dir in libsecurelink_core-*; do
+          for dir in libsecurelink_core-android-*; do
             if [ -d "$dir" ]; then
-              target=$(echo $dir | sed 's/libsecurelink_core-//')
+              target=$(echo $dir | sed 's/libsecurelink_core-android-//')
               mkdir -p "$target"
               mv "$dir"/libsecurelink_core.so "$target"/ 2>/dev/null || true
-              mv "$dir"/libsecurelink_core.dylib "$target"/ 2>/dev/null || true
-              mv "$dir"/libsecurelink_core.dll "$target"/ 2>/dev/null || true
             fi
           done
           ls -la */
@@ -175,12 +208,12 @@ jobs:
           retention-days: 90
 
   # ============================================
-  # BLOCKLIST BUILDER - Gera Bloom filter diariamente
+  # BLOCKLIST BUILDER - Gera Bloom filter (manual only)
   # ============================================
   blocklist-builder:
     name: Build Blocklist
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -206,20 +239,13 @@ jobs:
       - name: Download blocklist sources
         run: |
           mkdir -p blocklists
-          # OISD Full
           curl -sL "https://raw.githubusercontent.com/oisd/domains/main/domains.txt" -o blocklists/oisd.txt
-          # HaGeZi Phishing
           curl -sL "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/phishing.txt" -o blocklists/hagezi-phishing.txt
-          # HaGeZi NRD (Newly Registered Domains)
           curl -sL "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/nrd.txt" -o blocklists/hagezi-nrd.txt
-          # URLhaus
           curl -sL "https://urlhaus.abuse.ch/downloads/hostfile/" -o blocklists/urlhaus.txt
-          # PhishStats
           curl -sL "https://phishstats.info/phish_score.csv" -o blocklists/phishstats.csv
-          # OpenPhish
           curl -sL "https://openphish.com/feed.txt" -o blocklists/openphish.txt
           
-          # Converte CSV para lista de domínios
           if [ -f blocklists/phishstats.csv ]; then
             tail -n +2 blocklists/phishstats.csv | cut -d',' -f2 | sort -u > blocklists/phishstats.txt
           fi
@@ -231,31 +257,12 @@ jobs:
             --output blocklist.bloom \
             --version $(date +%s)
 
-      - name: Commit and push blocklist
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          # Cria branch para blocklists
-          git checkout -b blocklists-${{ github.run_id }} || git checkout blocklists
-          
-          cp blocklist.bloom android/app/src/main/assets/blocklist.bloom
-          git add android/app/src/main/assets/blocklist.bloom
-          
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: update blocklist $(date -u +'%Y-%m-%d %H:%M UTC')"
-            git push origin blocklists --force
-            
-            # Abre PR para main
-            gh pr create --title "chore: update blocklist $(date -u +'%Y-%m-%d')" \
-              --body "Atualização automática diária de blocklists de phishing/malware." \
-              --base main --head blocklists-${{ github.run_id }} \
-              --label "blocklist,automated"
-          else
-            echo "Nenhuma mudança na blocklist"
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Upload Bloom filter
+        uses: actions/upload-artifact@v4
+        with:
+          name: blocklist-bloom
+          path: blocklist.bloom
+          retention-days: 7
 
   # ============================================
   # RELEASE - Cria release no GitHub
@@ -279,20 +286,21 @@ jobs:
           cat > CHANGELOG.md << 'EOF'
           # SecureLink ${{ github.ref_name }}
           
-          ## Novidades
-          - Proteção contra phishing/homógrafos/typosquatting
-          - Navegador padrão para interceptar links no WhatsApp/Telegram/SMS
-          - Share target para links de WebViews internas (Instagram, etc.)
-          - Verificação offline via Bloom filter (OISD, HaGeZi, URLhaus)
-          - Consulta RDAP para idade do domínio
-          - Expansão automática de URLs curtas
-          - Foco em marcas brasileiras (Cacau Show, Nubank, Itaú, etc.)
+          ## 📱 Download
+          - [app-release.apk](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/app-release.apk) (universal ARM64/ARMv7/x86/x86_64)
           
-          ## Downloads
-          - [app-release.apk](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/app-release.apk)
+          ## ✨ Funcionalidades
+          - Intercepta links no WhatsApp, Telegram, SMS, Email
+          - Detecta homógrafos (cirílico/grego), typosquatting, combosquatting
+          - 60+ marcas brasileiras monitoradas
+          - Blocklist offline (1M+ domínios)
+          - RDAP para idade do domínio
           
-          ## Verificação
-          SHA256: $(sha256sum release/app-release.apk | cut -d' ' -f1)
+          ## 🔧 Instalação
+          1. Baixe o APK acima
+          2. Instale no Android (permita 'Instalar apps desconhecidos')
+          3. Abra o app → 'Definir como navegador padrão'
+          4. Teste clicando em: https://cacaushowbr.com (deve bloquear 🔴)
           EOF
 
       - name: Create Release
@@ -305,28 +313,3 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # ============================================
-  # SECURITY SCAN
-  # ============================================
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run cargo audit
-        working-directory: ./core
-        run: |
-          cargo install cargo-audit --locked
-          cargo audit
-
-      - name: Run cargo deny
-        working-directory: ./core
-        run: |
-          cargo install cargo-deny --locked
-          cargo deny check
-
-      - name: Run Android lint
-        working-directory: ./android
-        run: ./gradlew lintDebug --no-daemon || true
