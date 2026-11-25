@@ -24,7 +24,7 @@ serde_json = "1.0"
 # Bloom filter for offline blocklists
 bloomfilter = "3.0"
 # HTTP client for RDAP/unshortening
-reqwest = { version = "0.12", features = ["json", "rustls-tls", "blocking"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "blocking"] }
 # Date/time for domain age
 chrono = { version = "0.4", features = ["serde"] }
 # Error handling
