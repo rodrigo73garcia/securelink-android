@@ -1,5 +1,7 @@
 # Rust
 /target/
+core/target/
+blocklist-builder/target/
 **/*.rs.bk
 Cargo.lock
 
@@ -11,6 +13,7 @@ Cargo.lock
 /android/local.properties
 /android/app/src/main/jniLibs/*/libsecurelink_core.so
 /android/app/src/main/assets/blocklist.bloom
+/android/build/
 
 # IDE
 .idea/
@@ -27,7 +30,6 @@ Thumbs.db
 *.keystore
 *.jks
 keystore/
-# *.properties
 
 # Logs
 *.log
@@ -42,9 +44,8 @@ keystore/
 coverage/
 *.lcov
 
-# Blocklist builder
-/blocklist-builder/target/
+# Blocklist
 /blocklists/
-*.bloomcore/target/
+*.bloom
 *.so
 *.a
