@@ -2,6 +2,8 @@
 <resources>
     <!-- Cores primárias (Verde - seguro) -->
     <color name="primary">#2E7D32</color>
+    <color name="primary_dark">#1B5E20</color>
+    <color name="accent">#F9A825</color>
     <color name="primary_container">#A5D6A7</color>
     <color name="on_primary">#FFFFFF</color>
     <color name="on_primary_container">#1B5E20</color>
