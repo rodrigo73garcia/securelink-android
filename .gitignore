@@ -48,4 +48,6 @@ coverage/
 # Blocklist builder
 /blocklist-builder/target/
 /blocklists/
-*.bloom
+*.bloomcore/target/
+*.so
+*.a
