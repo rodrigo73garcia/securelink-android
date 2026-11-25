@@ -4,13 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.securelink.R
 import com.securelink.core.SecureLinkEngine
 import com.securelink.core.AnalysisResult
 import com.securelink.core.Verdict
-import com.securelink.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
 /**
@@ -20,22 +20,12 @@ import kotlinx.coroutines.launch
  */
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
     private val engine = SecureLinkEngine
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
-        // Verifica se engine nativo está disponível
-        if (!engine.isAvailable()) {
-            Log.e("MainActivity", "Engine nativo não disponível")
-            finish()
-            return
-        }
-
-        // Processa intent recebida (link clicado)
         handleIntent(intent)
     }
 
@@ -52,98 +42,68 @@ class MainActivity : AppCompatActivity() {
         if (action == Intent.ACTION_VIEW && data != null) {
             val url = data.toString()
             Log.d("MainActivity", "Link interceptado: $url")
-            
-            // Verificação rápida primeiro (sem UI se seguro)
-            val quickScore = engine.quickCheck(url)
-            
-            if (quickScore < 30) {
-                // Provavelmente seguro - abre direto no navegador real
-                openInRealBrowser(url)
-                finish()
-                return
-            }
-            
-            // Análise completa com UI
-            showVerdictUi(url)
+            analyzeAndShow(url)
         } else {
-            // Aberto diretamente (launcher) - mostra tela inicial
             showHomeScreen()
         }
     }
 
-    private fun showVerdictUi(url: String) {
-        binding.progressBar.isVisible = true
-        binding.tvStatus.text = "Analisando link..."
-        
+    private fun analyzeAndShow(url: String) {
         lifecycleScope.launch {
-            val jsonResult = engine.analyzeUrl(url)
-            val result = com.securelink.core.AnalysisResultParser.parse(jsonResult)
-            
-            runOnUiThread {
-                binding.progressBar.isVisible = false
-                renderVerdict(result, url)
-            }
+            val result = engine.analyze(url)
+            runOnUiThread { renderVerdict(result, url) }
         }
     }
 
     private fun renderVerdict(result: AnalysisResult, originalUrl: String) {
-        val verdictColor = when (result.verdict) {
-            Verdict.SAFE -> 0xFF2E7D32.toInt()      // Verde
-            Verdict.SUSPICIOUS -> 0xFFF9A825.toInt() // Amarelo
-            Verdict.BLOCKED -> 0xFFC62828.toInt()    // Vermelho
+        val tvVerdict = findViewById<android.widget.TextView>(R.id.tvVerdictLabel)
+        val tvUrl = findViewById<android.widget.TextView>(R.id.tvUrl)
+        val tvScore = findViewById<android.widget.TextView>(R.id.tvRiskScore)
+        val tvReasons = findViewById<android.widget.TextView>(R.id.tvReasons)
+        val btnOpen = findViewById<android.widget.Button>(R.id.btnOpenAnyway)
+        val btnOfficial = findViewById<android.widget.Button>(R.id.btnOpenOfficial)
+        val card = findViewById<android.view.View>(R.id.verdictCard)
+
+        val (color, emoji, label) = when (result.verdict) {
+            Verdict.SAFE -> Triple(0xFF2E7D32.toInt(), "✅", "SEGURO")
+            Verdict.SUSPICIOUS -> Triple(0xFFF9A825.toInt(), "⚠️", "SUSPEITO")
+            Verdict.BLOCKED -> Triple(0xFFC62828.toInt(), "🚫", "BLOQUEADO - PERIGO!")
         }
-        
-        binding.verdictCard.setCardBackgroundColor(verdictColor)
-        binding.tvVerdictLabel.text = result.verdict.name
-        binding.tvVerdictLabel.setTextColor(0xFFFFFFFF.toInt())
-        binding.tvUrl.text = originalUrl
-        binding.tvRiskScore.text = "Score: ${result.riskScore}/100"
-        
-        // Motivos
-        binding.reasonsContainer.removeAllViews()
-        for (reason in result.reasons) {
-            val reasonView = layoutInflater.inflate(R.layout.item_reason, binding.reasonsContainer, false)
-            reasonView.tvReasonCode.text = reason.code
-            reasonView.tvReasonMessage.text = reason.messagePt
-            reasonView.tvReasonSeverity.text = reason.severity.name
-            binding.reasonsContainer.addView(reasonView)
+
+        card.setBackgroundColor(color)
+        tvVerdict.text = "$emoji $label"
+        tvVerdict.setTextColor(0xFFFFFFFF.toInt())
+        tvUrl.text = originalUrl
+        tvScore.text = "Risco: ${result.riskScore}/100"
+
+        val reasonsText = result.reasons.joinToString("\n") { "• ${it.messagePt}" }
+        tvReasons.text = reasonsText
+
+        btnOpen.setOnClickListener { openInRealBrowser(originalUrl) }
+
+        if (result.impersonatedBrand != null) {
+            btnOfficial.visibility = View.VISIBLE
+            btnOfficial.setOnClickListener { openOfficialSite(result.impersonatedBrand!!) }
+        } else {
+            btnOfficial.visibility = View.GONE
         }
-        
-        // Ações
-        binding.btnOpenAnyway.setOnClickListener { openInRealBrowser(originalUrl) }
-        binding.btnOpenOfficial.setOnClickListener { 
-            result.impersonatedBrand?.let { brand ->
-                openOfficialSite(brand)
-            }
-        }
-        binding.btnReportFalsePositive.setOnClickListener { reportFalsePositive(originalUrl) }
-        
-        binding.verdictCard.isVisible = true
+
+        card.visibility = View.VISIBLE
     }
 
     private fun openInRealBrowser(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        // Força abertura no navegador real (não neste app)
-        intent.setPackage(null) 
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            // Fallback: deixa o sistema escolher
             startActivity(Intent.createChooser(intent, "Abrir com"))
         }
         finish()
     }
 
     private fun openOfficialSite(brand: String) {
-        // Busca domínio oficial da marca nas preferências/config
-        val officialUrl = getOfficialDomain(brand) ?: "https://google.com/search?q=$brand"
-        openInRealBrowser(officialUrl)
-    }
-
-    private fun getOfficialDomain(brand: String): String? {
-        // TODO: buscar no repositório de marcas
-        return when (brand.lowercase()) {
+        val officialUrl = when (brand.lowercase()) {
             "cacau show" -> "https://cacaushow.com.br"
             "nubank" -> "https://nubank.com.br"
             "apple" -> "https://apple.com"
@@ -151,19 +111,13 @@ class MainActivity : AppCompatActivity() {
             "microsoft" -> "https://microsoft.com"
             "amazon" -> "https://amazon.com.br"
             "mercado livre" -> "https://mercadolivre.com.br"
-            else -> null
+            else -> "https://www.google.com/search?q=$brand+site+oficial"
         }
-    }
-
-    private fun reportFalsePositive(url: String) {
-        // TODO: implementar envio de relato (opcional, anônimo)
-        Log.d("MainActivity", "Falso positivo reportado: $url")
+        openInRealBrowser(officialUrl)
     }
 
     private fun showHomeScreen() {
-        binding.verdictCard.isVisible = false
-        binding.tvStatus.text = "Pronto para verificar links"
-        binding.tvUrl.text = ""
-        // Mostra instruções de como usar
+        setContentView(R.layout.activity_main)
+        findViewById<android.widget.TextView>(R.id.tvStatus)?.text = "SecureLink ativo ✅\n\nDefina como navegador padrão em:\nConfigurações → Apps → Navegador padrão → SecureLink\n\nDepois clique em qualquer link no WhatsApp e veja a verificação!"
     }
 }

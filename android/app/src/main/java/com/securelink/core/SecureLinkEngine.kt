@@ -1,92 +1,92 @@
 package com.securelink.core
 
+import android.content.Context
 import android.util.Log
 
 /**
- * Bridge JNI para o motor Rust nativo.
- * Todas as chamadas são delegadas para libsecurelink_core.so
+ * Bridge unificado: usa motor Rust nativo (JNI) se disponível,
+ * senão usa o motor Kotlin puro (KotlinUrlAnalyzer).
  */
 object SecureLinkEngine {
-    
+
     private const val TAG = "SecureLinkEngine"
-    
-    // Carrega a biblioteca nativa
+    private var nativeAvailable = false
+    private var context: Context? = null
+
     init {
         try {
             System.loadLibrary("securelink_core")
-            Log.d(TAG, "Biblioteca nativa libsecurelink_core.so carregada")
+            nativeAvailable = true
+            Log.d(TAG, "Motor nativo Rust carregado")
         } catch (e: UnsatisfiedLinkError) {
-            Log.e(TAG, "Falha ao carregar biblioteca nativa: ${e.message}")
+            nativeAvailable = false
+            Log.w(TAG, "Lib nativa não encontrada, usando motor Kotlin puro")
+        }
+    }
+
+    fun init(context: Context) {
+        this.context = context
+        if (!nativeAvailable) {
+            KotlinUrlAnalyzer.init(context)
         }
     }
 
     /**
-     * Inicializa o motor com configuração JSON
-     * @param configJson JSON com EngineConfig
-     * @return true se sucesso
+     * Analisa URL e retorna resultado unificado.
      */
-    @JvmStatic
-    external fun init(configJson: String): Boolean
-
-    /**
-     * Carrega Bloom filter de arquivo
-     * @param path Caminho absoluto do arquivo .bloom
-     * @return true se sucesso
-     */
-    @JvmStatic
-    external fun loadBloomFilter(path: String): Boolean
-
-    /**
-     * Análise completa de URL - retorna JSON com FfiAnalysisResult
-     * @param url URL para analisar
-     * @return JSON string com resultado completo
-     */
-    @JvmStatic
-    external fun analyzeUrl(url: String): String
-
-    /**
-     * Verificação rápida - retorna apenas score de risco (0-100)
-     * @param url URL para verificar
-     * @return Score de risco (0-100), 50 se engine não inicializado
-     */
-    @JvmStatic
-    external fun quickCheck(url: String): Int
-
-    /**
-     * Verifica se domínio está na blocklist offline
-     * @param domain Domínio para verificar
-     * @return true se bloqueado
-     */
-    @JvmStatic
-    external fun isBlocklisted(domain: String): Boolean
-
-    /**
-     * Obtém idade do domínio em dias via RDAP
-     * @param domain Domínio para consultar
-     * @return Idade em dias, 0 se falhou/indisponível
-     */
-    @JvmStatic
-    external fun getDomainAge(domain: String): Int
-
-    /**
-     * Expande URL curta (bit.ly, t.co, etc.)
-     * @param url URL possivelmente curta
-     * @return URL final expandida, ou original se falhou
-     */
-    @JvmStatic
-    external fun expandUrl(url: String): String
-
-    /**
-     * Verifica se a engine está disponível
-     */
-    fun isAvailable(): Boolean {
-        // Tenta uma chamada simples
-        return try {
-            quickCheck("https://example.com") != 50 || true // Se chegou aqui, JNI funciona
-        } catch (e: Exception) {
-            false
+    fun analyze(url: String): AnalysisResult {
+        return if (nativeAvailable) {
+            try {
+                val json = analyzeUrlNative(url)
+                AnalysisResultParser.parse(json).copy(originalUrl = url)
+            } catch (e: Exception) {
+                Log.e(TAG, "Erro no motor nativo, usando Kotlin: ${e.message}")
+                analyzeKotlin(url)
+            }
+        } else {
+            analyzeKotlin(url)
         }
     }
+
+    private fun analyzeKotlin(url: String): AnalysisResult {
+        val r = KotlinUrlAnalyzer.analyze(url)
+        return AnalysisResult(
+            originalUrl = url,
+            finalUrl = url,
+            domain = url.substringAfter("://").substringBefore("/").substringBefore(":"),
+            punycodeDomain = null,
+            riskScore = r.riskScore,
+            verdict = r.verdict,
+            reasons = r.reasons,
+            impersonatedBrand = r.impersonatedBrand,
+            domainAgeDays = r.domainAgeDays,
+            hasHomograph = r.hasHomograph,
+            inBlocklist = r.reasons.any { it.code == "blocklist" },
+            analyzedAtMs = System.currentTimeMillis()
+        )
+    }
+
+    fun quickCheck(url: String): Int = analyze(url).riskScore
+
+    fun isBlocklisted(domain: String): Boolean {
+        return if (nativeAvailable) {
+            try { isBlocklistedNative(domain) } catch (e: Exception) { false }
+        } else {
+            KotlinUrlAnalyzer.analyze("https://$domain").reasons.any { it.code == "blocklist" }
+        }
+    }
+
+    fun loadBlocklist(domains: Set<String>) {
+        if (!nativeAvailable) {
+            KotlinUrlAnalyzer.loadBlocklist(domains)
+        }
+    }
+
+    fun isNativeAvailable(): Boolean = nativeAvailable
+
+    // JNI nativos (só funcionam se lib carregou)
+    private external fun analyzeUrlNative(url: String): String
+    private external fun isBlocklistedNative(domain: String): Boolean
 }
 
 /**
@@ -121,18 +121,15 @@ enum class Severity {
     INFO, WARNING, CRITICAL
 }
 
-/**
- * Converte JSON do Rust para objetos Kotlin
- */
 object AnalysisResultParser {
     private val gson = com.google.gson.Gson()
-    
+
     fun parse(json: String): AnalysisResult {
         val ffiResult = gson.fromJson(json, FfiAnalysisResult::class.java)
         return AnalysisResult(
-            originalUrl = ffiResult.finalUrl, // Será preenchido pelo chamador
+            originalUrl = ffiResult.finalUrl,
             finalUrl = ffiResult.finalUrl,
-            domain = "", // Extraído separadamente
+            domain = "",
             punycodeDomain = null,
             riskScore = ffiResult.riskScore,
             verdict = when (ffiResult.verdict) {
@@ -141,7 +138,7 @@ object AnalysisResultParser {
                 "Blocked" -> Verdict.BLOCKED
                 else -> Verdict.SUSPICIOUS
             },
-            reasons = ffiResult.reasons.map { Reason(it.code, it.messagePt, when(it.severity) {
+            reasons = ffiResult.reasons.map { Reason(it.code, it.messagePt, when (it.severity) {
                 "Info" -> Severity.INFO
                 "Warning" -> Severity.WARNING
                 "Critical" -> Severity.CRITICAL
@@ -154,7 +151,7 @@ object AnalysisResultParser {
             analyzedAtMs = System.currentTimeMillis()
         )
     }
-    
+
     private data class FfiAnalysisResult(
         val finalUrl: String,
         val riskScore: Int,
@@ -165,7 +162,7 @@ object AnalysisResultParser {
         val hasHomograph: Boolean,
         val inBlocklist: Boolean
     )
-    
+
     private data class FfiReason(
         val code: String,
         val messagePt: String,
