@@ -62,7 +62,6 @@ jobs:
       matrix:
         target:
           - aarch64-linux-android
-          - armv7-linux-androideabi
           - x86_64-linux-android
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +85,6 @@ jobs:
       - name: Configure Android NDK linker
         run: |
           echo "CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang" >> $GITHUB_ENV
-          echo "CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER=${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang" >> $GITHUB_ENV
           echo "CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang" >> $GITHUB_ENV
 
       - name: Build Rust core for Android
