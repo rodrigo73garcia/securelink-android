@@ -3,9 +3,9 @@ use std::fs;
 use std::path::PathBuf;
 use bloomfilter::Bloom;
 use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
-use bincode;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
+use anyhow::{Result, Context, anyhow};
 
 #[derive(Parser, Debug)]
 #[command(name = "blocklist-builder", version, about = "Builds Bloom filter from blocklist sources")]
@@ -22,9 +22,9 @@ struct Args {
     #[arg(short, long)]
     version: Option<u64>,
 
-    /// Tamanho estimado do filtro (bits por entrada * 10)
-    #[arg(long, default_value = "10000000")]
-    size: usize,
+    /// Número estimado de entradas (para calcular tamanho do filtro)
+    #[arg(long, default_value = "1000000")]
+    estimated_entries: usize,
 
     /// Número de funções hash
     #[arg(long, default_value = "7")]
@@ -42,7 +42,7 @@ struct BlocklistBloom {
     sources: Vec<String>,
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let args = Args::parse();
     
     let version = args.version.unwrap_or_else(|| {
@@ -90,20 +90,24 @@ fn main() -> anyhow::Result<()> {
 
     println!("📊 Total de domínios únicos: {}", domains.len());
 
-    // Cria Bloom filter
-    let bloom = Bloom::new(args.size, args.hash_funcs);
+    // Cria Bloom filter (bloomfilter 3.0 API)
+    // Tamanho: estimated_entries * 10 bits por entrada
+    let size = (args.estimated_entries * 10).max(1_000_000);
+    let mut bloom = Bloom::new(size, args.estimated_entries)
+        .map_err(|e| anyhow!("Falha ao criar Bloom filter: {}", e))?;
+    
     for domain in &domains {
-        bloom.insert(domain.as_bytes());
+        bloom.set(domain.as_bytes());
     }
 
     // Serializa
-    let filter_bytes = bincode::serialize(&bloom)?;
+    let filter_bytes = bloom.to_bytes();
     let filter_b64 = BASE64.encode(filter_bytes);
 
     let blocklist = BlocklistBloom {
         filter_data: filter_b64,
-        size: bloom.size(),
-        hash_funcs: bloom.k(),
+        size: bloom.len() as usize,
+        hash_funcs: bloom.number_of_hash_functions() as usize,
         estimated_entries: domains.len(),
         generated_at_ms: chrono::Utc::now().timestamp_millis(),
         version,
@@ -112,13 +116,13 @@ fn main() -> anyhow::Result<()> {
 
     // Salva
     let json = serde_json::to_string_pretty(&blocklist)?;
-    fs::write(&args.output, json)?;
+    fs::write(&args.output, json.as_bytes())?;
 
     println!("✅ Bloom filter salvo em: {}", args.output.display());
     println!("   Tamanho: {} bytes", json.len());
     println!("   Entradas estimadas: {}", domains.len());
-    println!("   Tamanho do filtro: {} bits ({} MB)", bloom.size(), bloom.size() / 8 / 1024 / 1024);
-    println!("   Funções hash: {}", bloom.k());
+    println!("   Tamanho do filtro: {} bits ({} MB)", bloom.len(), bloom.len() / 8 / 1024 / 1024);
+    println!("   Funções hash: {}", bloom.number_of_hash_functions());
     println!("   Versão: {}", version);
 
     Ok(())
@@ -131,14 +135,14 @@ mod tests {
     use tempfile::NamedTempFile;
 
     #[test]
-    fn test_build_bloom() {
-        let mut input = NamedTempFile::new().unwrap();
-        writeln!(input, "evil.com").unwrap();
-        writeln!(input, "phish.net").unwrap();
-        writeln!(input, "malware.org").unwrap();
-        input.flush().unwrap();
+    fn test_build_bloom() -> Result<()> {
+        let mut input = NamedTempFile::new()?;
+        writeln!(input, "evil.com")?;
+        writeln!(input, "phish.net")?;
+        writeln!(input, "malware.org")?;
+        input.flush()?;
 
-        let output = NamedTempFile::new().unwrap();
+        let output = NamedTempFile::new()?;
         let output_path = output.path().to_path_buf();
 
         // Simula args
@@ -146,14 +150,14 @@ mod tests {
             inputs: vec![input.path().to_path_buf()],
             output: output_path.clone(),
             version: Some(12345),
-            size: 10000,
+            estimated_entries: 1000,
             hash_funcs: 3,
         };
 
         // Executa lógica principal
         let mut domains = HashSet::new();
         for path in &args.inputs {
-            let content = fs::read_to_string(path).unwrap();
+            let content = fs::read_to_string(path)?;
             for line in content.lines() {
                 let line = line.trim();
                 if line.is_empty() || line.starts_with('#') { continue; }
@@ -161,14 +165,16 @@ mod tests {
             }
         }
 
-        let bloom = Bloom::new(args.size, args.hash_funcs);
+        let bloom = Bloom::new(args.estimated_entries * 10, args.estimated_entries)
+            .map_err(|e| anyhow!("Falha ao criar Bloom filter: {}", e))?;
         for domain in &domains {
-            bloom.insert(domain.as_bytes());
+            bloom.set(domain.as_bytes());
         }
 
         assert!(bloom.check("evil.com".as_bytes()));
         assert!(bloom.check("phish.net".as_bytes()));
         assert!(bloom.check("malware.org".as_bytes()));
         assert!(!bloom.check("google.com".as_bytes()));
+        Ok(())
     }
 }

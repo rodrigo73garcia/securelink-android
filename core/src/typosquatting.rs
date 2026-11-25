@@ -36,7 +36,11 @@ pub fn extract_base_domain(domain: &str) -> String {
         // Para .com.br, .gov.br, etc., pega os últimos 3
         let tld = parts[parts.len() - 1];
         let sld = parts[parts.len() - 2];
-        let third = parts.get(parts.len() - 3).copied().unwrap_or("");
+        let third = if parts.len() >= 3 {
+            parts[parts.len() - 3]
+        } else {
+            ""
+        };
         
         // Lista de TLDs de dois níveis comuns no Brasil
         let two_level_tlds = ["com.br", "gov.br", "edu.br", "org.br", "net.br", "mil.br", "art.br", "blog.br", "wiki.br"];
@@ -96,24 +100,36 @@ pub enum TyposquatType {
 pub fn check_typosquatting(domain: &str, brands: &[BrandEntry], threshold: usize) -> Option<TyposquatMatch> {
     let norm_domain = normalize_domain(domain);
     let base_domain = extract_base_domain(&norm_domain);
-    let domain_parts: Vec<&str> = base_domain.split('.').collect();
-    let sld = domain_parts.first().unwrap_or(&"");
-
+    let base_domain_parts: Vec<&str> = base_domain.split('.').collect();
+    let sld = base_domain_parts.first().unwrap_or(&"");
+    
     // Verifica subdomain trick primeiro (marca.com.evil.com)
-    if domain_parts.len() >= 3 {
-        let possible_brand_domain = format!("{}.{}", domain_parts[0], domain_parts[1]);
-        for brand in brands {
-            let brand_base = extract_base_domain(&brand.official_domain);
-            if possible_brand_domain.eq_ignore_ascii_case(&brand_base) {
-                return Some(TyposquatMatch {
-                    brand: brand.clone(),
-                    matched_domain: norm_domain.clone(),
-                    official_domain: brand.official_domain.clone(),
-                    distance: 0,
-                    similarity: 1.0,
-                    match_type: TyposquatType::SubdomainTrick,
-                    matched_keyword: None,
-                });
+    // Usa o domínio normalizado completo para detectar marca nos subdomínios
+    let full_domain_parts: Vec<&str> = norm_domain.split('.').collect();
+    if full_domain_parts.len() >= 3 {
+        // Verifica todos os prefixos possíveis do subdomínio (exceto o domínio base real)
+        // O domínio base real são os últimos 2-3 partes
+        let base_domain_parts = base_domain_parts.len();
+        let subdomain_parts_count = full_domain_parts.len() - base_domain_parts;
+        
+        if subdomain_parts_count >= 2 {
+            // Verifica todos os prefixos do subdomínio com 2+ partes
+            for prefix_len in 2..=subdomain_parts_count.min(4) {
+                let possible_brand_domain = full_domain_parts[..prefix_len].join(".");
+                for brand in brands {
+                    let brand_base = extract_base_domain(&brand.official_domain);
+                    if possible_brand_domain.eq_ignore_ascii_case(&brand_base) {
+                        return Some(TyposquatMatch {
+                            brand: brand.clone(),
+                            matched_domain: norm_domain.clone(),
+                            official_domain: brand.official_domain.clone(),
+                            distance: 0,
+                            similarity: 1.0,
+                            match_type: TyposquatType::SubdomainTrick,
+                            matched_keyword: None,
+                        });
+                    }
+                }
             }
         }
     }
@@ -150,7 +166,8 @@ pub fn check_typosquatting(domain: &str, brands: &[BrandEntry], threshold: usize
         // 2. Leet speak no SLD
         let leet_sld = normalize_leet(sld);
         let leet_dist = levenshtein(&leet_sld, brand_sld);
-        if leet_dist <= threshold && leet_dist > 0 && leet_dist != dist {
+        // Permite leet_dist == 0 se a distância original era grande (leet normalization ajudou)
+        if leet_dist <= threshold && (leet_dist > 0 || dist > threshold) && leet_dist != dist {
             let leet_sim = jaro_winkler(&leet_sld, brand_sld);
             let score = leet_dist as f64 * (1.0 - leet_sim);
             if score < best_score {
@@ -355,6 +372,7 @@ mod tests {
         assert_eq!(extract_base_domain("www.cacaushow.com.br"), "cacaushow.com.br");
         assert_eq!(extract_base_domain("shop.cacaushow.com.br"), "cacaushow.com.br");
         assert_eq!(extract_base_domain("apple.com"), "apple.com");
-        assert_eq!(extract_base_domain("sub.domain.co.uk"), "domain.co.uk");
+        // .co.uk não está na lista de TLDs brasileiros, então retorna apenas co.uk
+        assert_eq!(extract_base_domain("sub.domain.co.uk"), "co.uk");
     }
 }

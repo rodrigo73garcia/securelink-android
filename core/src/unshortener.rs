@@ -4,6 +4,7 @@
 
 use crate::types::*;
 use reqwest::blocking::Client;
+use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
 /// Cliente para descurtar URLs

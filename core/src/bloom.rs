@@ -194,7 +194,7 @@ mod tests {
     #[test]
     fn test_bloom_basic() -> Result<()> {
         let mut builder = BloomBuilder::new(1000)?;
-        builder.add_domains(&["evil.com".into(), "phish.net".into(), "malware.org".into()], "test")?;
+        builder.add_domains(&["evil.com".into(), "phish.net".into(), "malware.org".into()], "test");
         let bloom = builder.build()?;
         
         assert!(bloom.contains("evil.com"));
@@ -207,7 +207,7 @@ mod tests {
     #[test]
     fn test_subdomain_check() -> Result<()> {
         let mut builder = BloomBuilder::new(1000)?;
-        builder.add_domains(&["evil.com".into()], "test")?;
+        builder.add_domains(&["evil.com".into()], "test");
         let bloom = builder.build()?;
         
         assert!(bloom.contains_domain_or_parent("evil.com"));
@@ -220,7 +220,7 @@ mod tests {
     #[test]
     fn test_serialization() -> Result<()> {
         let mut builder = BloomBuilder::new(1000)?;
-        builder.add_domains(&["test.com".into()], "test")?;
+        builder.add_domains(&["test.com".into()], "test");
         let bloom = builder.build()?;
         
         let json = serde_json::to_string(&bloom)?;
