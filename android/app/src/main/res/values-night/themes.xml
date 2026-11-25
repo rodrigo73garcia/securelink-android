@@ -1,0 +1,30 @@
+<resources>
+    <!-- Tema dark (night) -->
+    <style name="Theme.SecureLink" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#81C784</color>
+        <item name="colorPrimaryContainer">#1B5E20</color>
+        <item name="colorSecondary">#FFB74D</color>
+        <item name="colorSecondaryContainer">#E65100</color>
+        <item name="colorTertiary">#64B5F6</color>
+        <item name="colorTertiaryContainer">#0D47A1</color>
+        <item name="colorError">#EF5350</color>
+        <item name="colorErrorContainer">#B71C1C</color>
+        <item name="colorSurface">#1C1E1C</color>
+        <item name="colorSurfaceVariant">#444743</color>
+        <item name="colorSurfaceContainerHighest">#4C4F4A</color>
+        <item name="colorBackground">#121412</color>
+        <item name="colorOnBackground">#E6E8E5</color>
+        <item name="on_primary">#000000</color>
+        <item name="on_primary_container">#A5D6A7</color>
+        <item name="on_secondary">#000000</color>
+        <item name="on_secondary_container">#FFB74D</color>
+        <item name="on_tertiary">#000000</color>
+        <item name="on_tertiary_container">#64B5F6</color>
+        <item name="on_error">#000000</color>
+        <item name="on_error_container">#EF5350</color>
+        <item name="on_surface">#E6E8E5</color>
+        <item name="on_surface_variant">#C3C7C1</color>
+        <item name="colorOutline">#8D918B</color>
+        <item name="colorOutlineVariant">#444743</color>
+    </style>
+</resources>

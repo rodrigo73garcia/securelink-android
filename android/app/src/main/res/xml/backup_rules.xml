@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+    <include domain="database" path="." />
+    <exclude domain="file" path="blocklist.bloom" />
+    <exclude domain="file" path="bloom_filters" />
+</full-backup-content>

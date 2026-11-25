@@ -1,0 +1,15 @@
+# Copie este arquivo para local.properties e preencha os valores
+# NUNCA commite local.properties (contém segredos)
+
+# SDK/NDK paths (ajuste para seu sistema)
+sdk.dir=/home/ubuntu/Android/Sdk
+ndk.dir=/home/ubuntu/Android/Sdk/ndk/26.1.10909125
+
+# Assinatura de release (configure via variáveis de ambiente no CI)
+# KEYSTORE_PATH=keystore/release.keystore
+# KEYSTORE_PASSWORD=your_keystore_password
+# KEY_ALIAS=your_key_alias
+# KEY_PASSWORD=your_key_password
+
+# GitHub token para workflows (configure nos secrets do repo)
+# GH_PAT=ghp_xxxxxxxxxxxx

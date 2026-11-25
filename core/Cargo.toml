@@ -1,0 +1,49 @@
+[package]
+name = "securelink-core"
+version = "0.1.0"
+edition = "2021"
+description = "Core detection engine for phishing/homograph/typosquatting detection"
+license = "MIT"
+
+[lib]
+name = "securelink_core"
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+# IDN/Punycode handling
+idna = { version = "0.5", features = ["std"] }
+unicode-ident = "1.0"
+unicode-normalization = "0.1"
+# Confusable characters (homograph attacks)
+confusables = "0.1"
+# Fast string similarity
+strsim = "0.11"
+# Serialization for brand lists
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# Bloom filter for offline blocklists
+bloomfilter = "3.0"
+# HTTP client for RDAP/unshortening
+reqwest = { version = "0.12", features = ["json", "rustls-tls", "blocking"] }
+# Date/time for domain age
+chrono = { version = "0.4", features = ["serde"] }
+# Error handling
+anyhow = "1.0"
+# Logging
+log = "0.4"
+env_logger = "0.10"
+# Base64 for bloom filter serialization
+base64 = "0.22"
+# JNI bindings (apenas para target Android)
+jni = { version = "0.21", optional = true }
+
+[features]
+default = []
+android = ["jni"]
+
+[profile.release]
+lto = true
+opt-level = "z"
+strip = true
+panic = "abort"
+codegen-units = 1

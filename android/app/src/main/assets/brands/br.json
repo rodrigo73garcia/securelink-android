@@ -1,0 +1,674 @@
+[
+  {
+    "name": "Cacau Show",
+    "official_domain": "cacaushow.com.br",
+    "alt_domains": ["cacaushow.com"],
+    "keywords": ["cacaushow", "cacau", "show", "chocolate", "promo", "promocao", "oferta", "páscoa", "natal", "presente"],
+    "priority": 100
+  },
+  {
+    "name": "Nubank",
+    "official_domain": "nubank.com.br",
+    "alt_domains": ["nubank.com"],
+    "keywords": ["nubank", "nu", "conta", "cartao", "cartão", "credito", "crédito", "emprestimo", "empréstimo", "investimento", "rendimento", "pix", "transferencia", "transferência"],
+    "priority": 100
+  },
+  {
+    "name": "Itaú",
+    "official_domain": "itau.com.br",
+    "alt_domains": ["itau.com", "itau-unibanco.com.br"],
+    "keywords": ["itau", "itáu", "unibanco", "conta", "cartao", "cartão", "credito", "crédito", "emprestimo", "empréstimo", "investimento", "pix", "agencia", "agência"],
+    "priority": 100
+  },
+  {
+    "name": "Banco do Brasil",
+    "official_domain": "bb.com.br",
+    "alt_domains": ["bancodobrasil.com.br", "bb.com"],
+    "keywords": ["bb", "bancodobrasil", "banco do brasil", "conta", "cartao", "cartão", "credito", "crédito", "emprestimo", "empréstimo", "pix", "boleto", "agencia", "agência"],
+    "priority": 100
+  },
+  {
+    "name": "Bradesco",
+    "official_domain": "bradesco.com.br",
+    "alt_domains": ["bradesco.com"],
+    "keywords": ["bradesco", "conta", "cartao", "cartão", "credito", "crédito", "emprestimo", "empréstimo", "investimento", "pix", "next", "agencia", "agência"],
+    "priority": 100
+  },
+  {
+    "name": "Santander Brasil",
+    "official_domain": "santander.com.br",
+    "alt_domains": ["santander.com", "santanderbrasil.com.br"],
+    "keywords": ["santander", "conta", "cartao", "cartão", "credito", "crédito", "emprestimo", "empréstimo", "pix", "sx", "agencia", "agência"],
+    "priority": 100
+  },
+  {
+    "name": "Caixa Econômica Federal",
+    "official_domain": "caixa.gov.br",
+    "alt_domains": ["caixa.gov", "caixa.com.br"],
+    "keywords": ["caixa", "caixa economica", "caixa econômica", "fgts", "pis", "pasep", "bolsa familia", "bolsa família", "auxilio", "auxílio", "habitacao", "habitação", "loteria", "megasena", "mega-sena"],
+    "priority": 100
+  },
+  {
+    "name": "Mercado Livre",
+    "official_domain": "mercadolivre.com.br",
+    "alt_domains": ["mercadolivre.com", "mercadolibre.com.br", "mlb.com.br"],
+    "keywords": ["mercado livre", "mercadolivre", "mercado livre brasil", "compra", "venda", "frete gratis", "frete grátis", "mercado pago", "mercadopago", "oferta", "promocao", "promoção", "black friday", "blackfriday"],
+    "priority": 100
+  },
+  {
+    "name": "Magazine Luiza",
+    "official_domain": "magazineluiza.com.br",
+    "alt_domains": ["magalu.com.br", "magazine.com.br"],
+    "keywords": ["magazine luiza", "magalu", "magazine", "luiza", "compra", "venda", "frete gratis", "frete grátis", "luiza cred", "luizacred", "oferta", "promocao", "promoção", "black friday"],
+    "priority": 100
+  },
+  {
+    "name": "Amazon Brasil",
+    "official_domain": "amazon.com.br",
+    "alt_domains": ["amazon.com", "amzn.com.br"],
+    "keywords": ["amazon", "prime", "kindle", "alexa", "fire tv", "frete gratis", "frete grátis", "oferta", "promocao", "promoção", "black friday", "blackfriday", "livros", "eletronicos", "eletrônicos"],
+    "priority": 95
+  },
+  {
+    "name": "Americanas",
+    "official_domain": "americanas.com.br",
+    "alt_domains": ["americanas.com"],
+    "keywords": ["americanas", "americanas.com", "ame", "ame digital", "frete gratis", "frete grátis", "oferta", "promocao", "promoção", "black friday", "blackfriday"],
+    "priority": 95
+  },
+  {
+    "name": "Via / Casas Bahia / Ponto",
+    "official_domain": "viavarejo.com.br",
+    "alt_domains": ["casasbahia.com.br", "pontofrio.com.br", "extra.com.br"],
+    "keywords": ["casas bahia", "ponto frio", "extra", "viavarejo", "frete gratis", "frete grátis", "oferta", "promocao", "promoção", "carnê", "credito", "crédito"],
+    "priority": 90
+  },
+  {
+    "name": "Correios",
+    "official_domain": "correios.com.br",
+    "alt_domains": ["correios.com"],
+    "keywords": ["correios", "sedex", "pac", "rastreamento", "rastreio", "entrega", "encomenda", "postagem", "cep", "frete", "taxa", "alfandega", "alfândega", "importacao", "importação"],
+    "priority": 100
+  },
+  {
+    "name": "Gov.br",
+    "official_domain": "gov.br",
+    "alt_domains": ["servicos.gov.br", "acesso.gov.br"],
+    "keywords": ["gov.br", "gov br", "acesso gov", "servicos gov", "serviços gov", "cpf", "cnh", "titulo eleitor", "título eleitor", "inss", "meu inss", "carteira trabalho", "carteira de trabalho", "fgts", "pis", "seguro desemprego", "seguro-desemprego"],
+    "priority": 100
+  },
+  {
+    "name": "Receita Federal",
+    "official_domain": "receita.fazenda.gov.br",
+    "alt_domains": ["receita.gov.br", "e-cac.gov.br", "ecac.gov.br"],
+    "keywords": ["receita federal", "receita", "fazenda", "irpf", "irpf2024", "declaração", "declaracao", "restituição", "restituição", "malha fina", "cpf", "cnpj", "e-cac", "ecac", "certidão", "certidao", "negativa", "débitos", "débitos"],
+    "priority": 100
+  },
+  {
+    "name": "INSS",
+    "official_domain": "inss.gov.br",
+    "alt_domains": ["meuinss.gov.br", "previdencia.gov.br"],
+    "keywords": ["inss", "meu inss", "previdência", "previdencia", "aposentadoria", "pensão", "pensao", "beneficio", "benefício", "auxilio doença", "auxílio doença", "salario maternidade", "salário maternidade", "bpc", "loas"],
+    "priority": 100
+  },
+  {
+    "name": "Detran",
+    "official_domain": "detran.sp.gov.br",
+    "alt_domains": ["detran.df.gov.br", "detran.rj.gov.br", "detran.mg.gov.br", "detran.rs.gov.br"],
+    "keywords": ["detran", "cnh", "habilitação", "habilitacao", "veículo", "veiculo", "licenciamento", "ipva", "dpvat", "multa", "pontos", "renovação", "renovacao", "primeira habilitação", "primeira habilitacao"],
+    "priority": 95
+  },
+  {
+    "name": "WhatsApp",
+    "official_domain": "whatsapp.com",
+    "alt_domains": ["web.whatsapp.com", "api.whatsapp.com", "business.whatsapp.com"],
+    "keywords": ["whatsapp", "whats", "zap", "web whatsapp", "whatsapp web", "codigo", "código", "verificação", "verificação", "backup", "restaurar", "conta"],
+    "priority": 95
+  },
+  {
+    "name": "Telegram",
+    "official_domain": "telegram.org",
+    "alt_domains": ["web.telegram.org", "t.me", "telegram.me"],
+    "keywords": ["telegram", "telegram web", "t.me", "canal", "grupo", "bot", "verificação", "verificação", "codigo", "código", "dupla autenticação", "dupla autenticacao"],
+    "priority": 90
+  },
+  {
+    "name": "Instagram",
+    "official_domain": "instagram.com",
+    "alt_domains": ["www.instagram.com", "m.instagram.com"],
+    "keywords": ["instagram", "insta", "reels", "stories", "direct", "verificação", "verificação", "badge", "azul", "login", "conta", "senha"],
+    "priority": 90
+  },
+  {
+    "name": "Facebook",
+    "official_domain": "facebook.com",
+    "alt_domains": ["fb.com", "m.facebook.com", "business.facebook.com"],
+    "keywords": ["facebook", "fb", "meta", "messenger", "marketplace", "grupos", "página", "pagina", "anúncio", "anúncio", "verificação", "verificação", "senha", "login"],
+    "priority": 90
+  },
+  {
+    "name": "Google",
+    "official_domain": "google.com",
+    "alt_domains": ["google.com.br", "accounts.google.com", "myaccount.google.com", "gmail.com", "drive.google.com", "photos.google.com", "maps.google.com", "youtube.com", "play.google.com"],
+    "keywords": ["google", "gmail", "drive", "fotos", "photos", "maps", "youtube", "play store", "conta google", "verificação", "verificação", "2fa", "autenticação", "autenticação", "senha", "recuperação", "recuperação"],
+    "priority": 100
+  },
+  {
+    "name": "Microsoft",
+    "official_domain": "microsoft.com",
+    "alt_domains": ["live.com", "outlook.com", "office.com", "onedrive.com", "teams.microsoft.com", "azure.microsoft.com"],
+    "keywords": ["microsoft", "outlook", "hotmail", "live", "office", "word", "excel", "powerpoint", "onedrive", "teams", "azure", "xbox", "conta microsoft", "verificação", "verificação", "senha", "recuperação", "recuperação"],
+    "priority": 95
+  },
+  {
+    "name": "Apple",
+    "official_domain": "apple.com",
+    "alt_domains": ["icloud.com", "appleid.apple.com", "support.apple.com", "music.apple.com", "tv.apple.com"],
+    "keywords": ["apple", "icloud", "apple id", "app store", "itunes", "apple music", "apple tv", "find my", "buscar", "verificação", "verificação", "2fa", "senha", "recuperação", "recuperação", "dispositivo", "iphone", "ipad", "mac"],
+    "priority": 95
+  },
+  {
+    "name": "Netflix",
+    "official_domain": "netflix.com",
+    "alt_domains": ["netflix.com.br", "help.netflix.com"],
+    "keywords": ["netflix", "conta netflix", "senha", "plano", "assinatura", "perfil", "pagamento", "fatura", "renovação", "renovação", "cancelamento", "recuperação", "recuperação"],
+    "priority": 85
+  },
+  {
+    "name": "Spotify",
+    "official_domain": "spotify.com",
+    "alt_domains": ["accounts.spotify.com", "open.spotify.com"],
+    "keywords": ["spotify", "conta spotify", "premium", "familia", "família", "estudante", "pagamento", "fatura", "senha", "recuperação", "recuperação", "playlist"],
+    "priority": 85
+  },
+  {
+    "name": "Uber",
+    "official_domain": "uber.com",
+    "alt_domains": ["uber.com.br", "riders.uber.com", "drivers.uber.com", "eats.uber.com"],
+    "keywords": ["uber", "uber eats", "viagem", "corrida", "motorista", "entrega", "pagamento", "cupom", "promocao", "promoção", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "iFood",
+    "official_domain": "ifood.com.br",
+    "alt_domains": ["ifood.com", "restaurant.ifood.com.br", "consumer.ifood.com.br"],
+    "keywords": ["ifood", "i food", "delivery", "entrega", "restaurante", "pedido", "cupom", "promocao", "promoção", "pagamento", "conta", "senha", "verificação", "verificação"],
+    "priority": 95
+  },
+  {
+    "name": "Rappi",
+    "official_domain": "rappi.com.br",
+    "alt_domains": ["rappi.com", "rappi.com.co", "rappi.com.mx"],
+    "keywords": ["rappi", "delivery", "entrega", "supermercado", "farmacia", "farmácia", "cupom", "promocao", "promoção", "pagamento", "conta", "senha", "prime", "rappi prime"],
+    "priority": 90
+  },
+  {
+    "name": "99",
+    "official_domain": "99app.com",
+    "alt_domains": ["99.com.br", "99taxi.com", "99pay.com.br"],
+    "keywords": ["99", "99app", "99taxi", "99pay", "corrida", "viagem", "motorista", "pagamento", "cupom", "promocao", "promoção", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "PicPay",
+    "official_domain": "picpay.com",
+    "alt_domains": ["picpay.com.br", "app.picpay.com"],
+    "keywords": ["picpay", "pic pay", "carteira", "pix", "cartao", "cartão", "credito", "crédito", "emprestimo", "empréstimo", "investimento", "cashback", "conta", "senha", "verificação", "verificação"],
+    "priority": 90
+  },
+  {
+    "name": "Inter",
+    "official_domain": "inter.co",
+    "alt_domains": ["bancointer.com.br", "inter.com.br"],
+    "keywords": ["inter", "banco inter", "conta digital", "pix", "cartao", "cartão", "credito", "crédito", "investimento", "cashback", "shopping", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "C6 Bank",
+    "official_domain": "c6bank.com.br",
+    "alt_domains": ["c6bank.com"],
+    "keywords": ["c6", "c6 bank", "c6bank", "conta", "cartao", "cartão", "credito", "crédito", "investimento", "tag", "pedagio", "pedágio", "pix", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "Next (Bradesco)",
+    "official_domain": "next.me",
+    "alt_domains": ["next.bradesco.com.br", "nextbank.com.br"],
+    "keywords": ["next", "next bank", "conta digital", "mimos", "pix", "cartao", "cartão", "credito", "crédito", "investimento", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Will Bank",
+    "official_domain": "willbank.com.br",
+    "alt_domains": ["will.com.br"],
+    "keywords": ["will", "will bank", "willbank", "conta", "cartao", "cartão", "credito", "crédito", "pix", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Neon",
+    "official_domain": "neon.com.br",
+    "alt_domains": ["neon.com"],
+    "keywords": ["neon", "neon bank", "conta digital", "pix", "cartao", "cartão", "credito", "crédito", "investimento", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Banco Original",
+    "official_domain": "original.com.br",
+    "alt_domains": ["original.com"],
+    "keywords": ["original", "banco original", "conta digital", "pix", "cartao", "cartão", "credito", "crédito", "investimento", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "BTG Pactual",
+    "official_domain": "btgpactual.com",
+    "alt_domains": ["btgpactual.com.br", "investimentos.btgpactual.com"],
+    "keywords": ["btg", "btg pactual", "pactual", "investimento", "fundos", "ações", "acoes", "renda fixa", "renda variável", "renda variavel", "pix", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "XP Investimentos",
+    "official_domain": "xpi.com.br",
+    "alt_domains": ["xp.com.br", "xpinvestimentos.com.br"],
+    "keywords": ["xp", "xp investimentos", "xpi", "investimento", "corretora", "ações", "acoes", "fundos", "renda fixa", "tesouro direto", "pix", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "Rico",
+    "official_domain": "rico.com.vc",
+    "alt_domains": ["rico.com.br"],
+    "keywords": ["rico", "rico investimentos", "investimento", "corretora", "ações", "acoes", "fundos", "tesouro direto", "pix", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Clear",
+    "official_domain": "clear.com.br",
+    "alt_domains": ["clear.com"],
+    "keywords": ["clear", "clear corretora", "investimento", "corretora", "ações", "acoes", "day trade", "swing trade", "pix", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Easynvest (Nubank)",
+    "official_domain": "easynvest.com.br",
+    "alt_domains": ["easynvest.com"],
+    "keywords": ["easynvest", "easy invest", "investimento", "corretora", "tesouro direto", "pix", "conta", "senha", "verificação", "verificação"],
+    "priority": 75
+  },
+  {
+    "name": "PayPal",
+    "official_domain": "paypal.com",
+    "alt_domains": ["paypal.com.br", "paypalobjects.com"],
+    "keywords": ["paypal", "pagamento", "conta", "saldo", "cartao", "cartão", "vinculado", "contestação", "contestação", "reembolso", "proteção", "protecao", "comprador", "vendedor", "senha", "verificação", "verificação"],
+    "priority": 90
+  },
+  {
+    "name": "PagSeguro / PagBank",
+    "official_domain": "pagseguro.com.br",
+    "alt_domains": ["pagbank.com.br", "uol.com.br"],
+    "keywords": ["pagseguro", "pagbank", "pag seguro", "pag bank", "conta", "cartao", "cartão", "maquininha", "pix", "boleto", "recarga", "celular", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "Mercado Pago",
+    "official_domain": "mercadopago.com.br",
+    "alt_domains": ["mercadopago.com", "mpago.com.br"],
+    "keywords": ["mercado pago", "mercadopago", "pagamento", "conta", "cartao", "cartão", "point", "maquininha", "pix", "boleto", "parcelamento", "senha", "verificação", "verificação"],
+    "priority": 90
+  },
+  {
+    "name": "Stone",
+    "official_domain": "stone.com.br",
+    "alt_domains": ["stone.com", "stone.co"],
+    "keywords": ["stone", "stone pagamentos", "maquininha", "pagamento", "conta", "pix", "boleto", "parcelamento", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Cielo",
+    "official_domain": "cielo.com.br",
+    "alt_domains": ["cielo.com", "cielo.com.br"],
+    "keywords": ["cielo", "cielo pagamentos", "maquininha", "pagamento", "conta", "pix", "boleto", "parcelamento", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "GetNet",
+    "official_domain": "getnet.com.br",
+    "alt_domains": ["getnet.com"],
+    "keywords": ["getnet", "getnet pagamentos", "maquininha", "pagamento", "conta", "pix", "boleto", "parcelamento", "senha", "verificação", "verificação"],
+    "priority": 75
+  },
+  {
+    "name": "Iugu",
+    "official_domain": "iugu.com",
+    "alt_domains": ["iugu.com.br"],
+    "keywords": ["iugu", "iugu pagamentos", "assinatura", "recorrência", "recorrencia", "boleto", "pix", "cartao", "cartão", "marketplace", "senha", "verificação", "verificação"],
+    "priority": 75
+  },
+  {
+    "name": "Asaas",
+    "official_domain": "asaas.com",
+    "alt_domains": ["asaas.com.br"],
+    "keywords": ["asaas", "asaas pagamentos", "boleto", "pix", "cobrança", "cobranca", "assinatura", "recorrência", "recorrencia", "senha", "verificação", "verificação"],
+    "priority": 75
+  },
+  {
+    "name": "Globoplay",
+    "official_domain": "globoplay.globo.com",
+    "alt_domains": ["globo.com", "gshow.globo.com", "ge.globo.com"],
+    "keywords": ["globoplay", "globo play", "globo", "gshow", "ge", "assinatura", "conta", "senha", "verificação", "verificação"],
+    "priority": 70
+  },
+  {
+    "name": "Disney+",
+    "official_domain": "disneyplus.com",
+    "alt_domains": ["disney.com.br", "disneylatino.com"],
+    "keywords": ["disney", "disney plus", "disney+", "star+", "star plus", "assinatura", "conta", "senha", "verificação", "verificação"],
+    "priority": 70
+  },
+  {
+    "name": "HBO Max",
+    "official_domain": "hbomax.com",
+    "alt_domains": ["hbomax.com.br", "hbogo.com"],
+    "keywords": ["hbo", "hbo max", "hbomax", "assinatura", "conta", "senha", "verificação", "verificação"],
+    "priority": 70
+  },
+  {
+    "name": "Amazon Prime Video",
+    "official_domain": "primevideo.com",
+    "alt_domains": ["primevideo.com.br", "amazon.com/gp/video/storefront"],
+    "keywords": ["prime video", "primevideo", "amazon prime", "assinatura", "conta", "senha", "verificação", "verificação"],
+    "priority": 70
+  },
+  {
+    "name": "Steam",
+    "official_domain": "steampowered.com",
+    "alt_domains": ["store.steampowered.com", "steamcommunity.com", "help.steampowered.com"],
+    "keywords": ["steam", "valve", "jogo", "jogos", "conta", "inventario", "inventário", "skin", "trade", "mercado", "community", "senha", "verificação", "verificação", "guard", "steam guard"],
+    "priority": 85
+  },
+  {
+    "name": "Epic Games",
+    "official_domain": "epicgames.com",
+    "alt_domains": ["epicgames.com.br", "store.epicgames.com", "fortnite.com"],
+    "keywords": ["epic games", "epicgames", "fortnite", "rocket league", "fall guys", "conta", "senha", "verificação", "verificação", "2fa", "autenticação", "autenticação"],
+    "priority": 80
+  },
+  {
+    "name": "PlayStation Network",
+    "official_domain": "playstation.com",
+    "alt_domains": ["playstation.com.br", "store.playstation.com", "account.sonyentertainmentnetwork.com"],
+    "keywords": ["playstation", "psn", "ps5", "ps4", "playstation network", "sony", "conta", "senha", "verificação", "verificação", "2fa", "plus", "assinatura"],
+    "priority": 85
+  },
+  {
+    "name": "Xbox / Microsoft Gaming",
+    "official_domain": "xbox.com",
+    "alt_domains": ["xbox.com.br", "account.xbox.com", "microsoft.com"],
+    "keywords": ["xbox", "xbox live", "game pass", "gamepass", "microsoft", "conta", "senha", "verificação", "verificação", "2fa", "assinatura", "ultimate"],
+    "priority": 85
+  },
+  {
+    "name": "Battle.net (Blizzard)",
+    "official_domain": "battle.net",
+    "alt_domains": ["blizzard.com", "worldofwarcraft.com", "overwatch.com", "diablo.com", "hearthstone.com"],
+    "keywords": ["battle.net", "battlenet", "blizzard", "wow", "world of warcraft", "overwatch", "diablo", "hearthstone", "conta", "senha", "verificação", "verificação", "autenticador", "authenticator"],
+    "priority": 80
+  },
+  {
+    "name": "Discord",
+    "official_domain": "discord.com",
+    "alt_domains": ["discordapp.com", "discord.gg", "canary.discord.com", "ptb.discord.com"],
+    "keywords": ["discord", "servidor", "server", "canal", "channel", "nitro", "conta", "senha", "verificação", "verificação", "2fa", "token", "bot", "webhook"],
+    "priority": 90
+  },
+  {
+    "name": "LinkedIn",
+    "official_domain": "linkedin.com",
+    "alt_domains": ["br.linkedin.com", "linkedin.com.br"],
+    "keywords": ["linkedin", "linked in", "emprego", "vaga", "currículo", "curriculo", "networking", "conexão", "conexao", "conta", "senha", "verificação", "verificação", "premium", "sales navigator"],
+    "priority": 85
+  },
+  {
+    "name": "Twitter / X",
+    "official_domain": "x.com",
+    "alt_domains": ["twitter.com", "t.co"],
+    "keywords": ["twitter", "x.com", "tweet", "retweet", "seguidor", "verificação", "verificação", "blue", "x premium", "conta", "senha", "2fa", "autenticação", "autenticação"],
+    "priority": 90
+  },
+  {
+    "name": "TikTok",
+    "official_domain": "tiktok.com",
+    "alt_domains": ["tiktok.com.br", "vm.tiktok.com", "vt.tiktok.com"],
+    "keywords": ["tiktok", "tik tok", "reels", "viral", "conta", "senha", "verificação", "verificação", "creator", "creator fund", "moedas", "coins", "presente", "live"],
+    "priority": 90
+  },
+  {
+    "name": "Kwai",
+    "official_domain": "kwai.com",
+    "alt_domains": ["kwai.com.br", "kwai.app"],
+    "keywords": ["kwai", "kwai app", "vídeo", "video", "conta", "senha", "verificação", "verificação", "moedas", "coins", "saque", "pix"],
+    "priority": 80
+  },
+  {
+    "name": "Shopee",
+    "official_domain": "shopee.com.br",
+    "alt_domains": ["shopee.com", "seller.shopee.com.br", "affiliate.shopee.com.br"],
+    "keywords": ["shopee", "shopee brasil", "compra", "venda", "frete gratis", "frete grátis", "moedas", "coins", "shopee pay", "parcelamento", "cupom", "promocao", "promoção", "black friday", "9.9", "10.10", "11.11", "12.12", "conta", "senha", "verificação", "verificação"],
+    "priority": 95
+  },
+  {
+    "name": "Shein",
+    "official_domain": "shein.com",
+    "alt_domains": ["shein.com.br", "br.shein.com"],
+    "keywords": ["shein", "moda", "roupa", "vestido", "frete gratis", "frete grátis", "cupom", "promocao", "promoção", "pontos", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "AliExpress",
+    "official_domain": "aliexpress.com",
+    "alt_domains": ["pt.aliexpress.com", "aliexpress.com.br"],
+    "keywords": ["aliexpress", "ali express", "compra", "internacional", "china", "frete gratis", "frete grátis", "cupom", "promocao", "promoção", "escolha do comprador", "disputa", "reembolso", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "Wish",
+    "official_domain": "wish.com",
+    "alt_domains": ["wish.com.br"],
+    "keywords": ["wish", "compra", "barato", "frete gratis", "frete grátis", "cupom", "promocao", "promoção", "conta", "senha", "verificação", "verificação"],
+    "priority": 75
+  },
+  {
+    "name": "Enjoei",
+    "official_domain": "enjoei.com.br",
+    "alt_domains": ["enjoei.com"],
+    "keywords": ["enjoei", "enjoei.com", "brechó", "brecho", "segunda mão", "segunda mao", "usado", "venda", "compra", "conta", "senha", "verificação", "verificação"],
+    "priority": 75
+  },
+  {
+    "name": "OLX",
+    "official_domain": "olx.com.br",
+    "alt_domains": ["olx.com", "olx.pt"],
+    "keywords": ["olx", "olx brasil", "compra", "venda", "anúncio", "anuncio", "veículo", "veiculo", "imóvel", "imovel", "emprego", "serviço", "servico", "conta", "senha", "verificação", "verificação"],
+    "priority": 90
+  },
+  {
+    "name": "Webmotors",
+    "official_domain": "webmotors.com.br",
+    "alt_domains": ["webmotors.com"],
+    "keywords": ["webmotors", "web motors", "veículo", "veiculo", "carro", "moto", "compra", "venda", "financiamento", "ipva", "licenciamento", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Zap Imóveis",
+    "official_domain": "zapimoveis.com.br",
+    "alt_domains": ["zap.com.br", "vivareal.com.br"],
+    "keywords": ["zap", "zap imoveis", "zap imóveis", "vivareal", "imóvel", "imovel", "aluguel", "venda", "compra", "apartamento", "casa", "condomínio", "condominio", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "QuintoAndar",
+    "official_domain": "quintoandar.com.br",
+    "alt_domains": ["quintoandar.com"],
+    "keywords": ["quintoandar", "quinto andar", "aluguel", "aluguel sem fiador", "imóvel", "imovel", "apartamento", "casa", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Airbnb",
+    "official_domain": "airbnb.com.br",
+    "alt_domains": ["airbnb.com", "airbnb.com.br"],
+    "keywords": ["airbnb", "air bnb", "hospedagem", "aluguel temporada", "viagem", "reserva", "anfitrião", "anfitriao", "hóspede", "hospede", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "Booking.com",
+    "official_domain": "booking.com",
+    "alt_domains": ["booking.com.br"],
+    "keywords": ["booking", "booking.com", "hospedagem", "hotel", "pousada", "resort", "reserva", "cancelamento", "grátis", "gratis", "conta", "senha", "verificação", "verificação", "genius"],
+    "priority": 85
+  },
+  {
+    "name": "Decolar",
+    "official_domain": "decolar.com",
+    "alt_domains": ["decolar.com.br", "decolar.com.ar"],
+    "keywords": ["decolar", "decolar.com", "passagem", "passagem aérea", "passagem aerea", "hotel", "pacote", "viagem", "promocao", "promoção", "milhas", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "Gol Linhas Aéreas",
+    "official_domain": "voegol.com.br",
+    "alt_domains": ["gol.com.br", "smiles.com.br"],
+    "keywords": ["gol", "gol linhas aereas", "gol linhas aéreas", "voegol", "smiles", "passagem", "milhas", "check-in", "checkin", "bagagem", "voo", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "LATAM Airlines",
+    "official_domain": "latam.com",
+    "alt_domains": ["latam.com.br", "latampass.com", "latampass.com.br"],
+    "keywords": ["latam", "latam airlines", "latam pass", "passagem", "milhas", "check-in", "checkin", "bagagem", "voo", "upgrade", "conta", "senha", "verificação", "verificação"],
+    "priority": 85
+  },
+  {
+    "name": "Azul Linhas Aéreas",
+    "official_domain": "voeazul.com.br",
+    "alt_domains": ["azul.com.br", "tudoazul.com.br"],
+    "keywords": ["azul", "azul linhas aereas", "azul linhas aéreas", "voeazul", "tudo azul", "tudoazul", "passagem", "pontos", "check-in", "checkin", "bagagem", "voo", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "123Milhas",
+    "official_domain": "123milhas.com",
+    "alt_domains": ["123milhas.com.br", "maxmilhas.com.br"],
+    "keywords": ["123milhas", "maxmilhas", "milhas", "passagem", "passagem aerea", "passagem aérea", "emitir", "emissao", "emissão", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Udemy",
+    "official_domain": "udemy.com",
+    "alt_domains": ["udemy.com.br"],
+    "keywords": ["udemy", "curso", "cursos", "online", "certificado", "programação", "programação", "desenvolvimento", "conta", "senha", "verificação", "verificação"],
+    "priority": 70
+  },
+  {
+    "name": "Coursera",
+    "official_domain": "coursera.org",
+    "alt_domains": ["coursera.com"],
+    "keywords": ["coursera", "curso", "certificado", "universidade", "especialização", "especializacao", "conta", "senha", "verificação", "verificação"],
+    "priority": 70
+  },
+  {
+    "name": "Alura",
+    "official_domain": "alura.com.br",
+    "alt_domains": ["alura.com", "cursos.alura.com.br"],
+    "keywords": ["alura", "alura cursos", "formação", "formacao", "certificado", "programação", "programação", "data science", "devops", "conta", "senha", "verificação", "verificação"],
+    "priority": 80
+  },
+  {
+    "name": "Rocketseat",
+    "official_domain": "rocketseat.com.br",
+    "alt_domains": ["rocketseat.com"],
+    "keywords": ["rocketseat", "rocket seat", "programação", "programação", "react", "node", "typescript", "ignite", "nlw", "next level week", "conta", "senha", "verificação", "verificação"],
+    "priority": 75
+  },
+  {
+    "name": "DIO (Digital Innovation One)",
+    "official_domain": "dio.me",
+    "alt_domains": ["digitalinnovation.one", "web.dio.me"],
+    "keywords": ["dio", "digital innovation one", "bootcamp", "formação", "formacao", "certificado", "programação", "programação", "conta", "senha", "verificação", "verificação"],
+    "priority": 70
+  },
+  {
+    "name": "GitHub",
+    "official_domain": "github.com",
+    "alt_domains": ["github.io", "raw.githubusercontent.com", "gist.github.com"],
+    "keywords": ["github", "git", "repositório", "repositorio", "commit", "pull request", "issue", "actions", "pages", "copilot", "conta", "senha", "verificação", "verificação", "2fa", "ssh", "gpg"],
+    "priority": 90
+  },
+  {
+    "name": "GitLab",
+    "official_domain": "gitlab.com",
+    "alt_domains": ["gitlab.io", "about.gitlab.com"],
+    "keywords": ["gitlab", "git", "repositório", "repositorio", "ci/cd", "pipeline", "merge request", "issue", "pages", "conta", "senha", "verificação", "verificação", "2fa"],
+    "priority": 80
+  },
+  {
+    "name": "Bitbucket",
+    "official_domain": "bitbucket.org",
+    "alt_domains": ["bitbucket.com"],
+    "keywords": ["bitbucket", "git", "repositório", "repositorio", "pipeline", "pull request", "conta", "senha", "verificação", "verificação", "2fa"],
+    "priority": 75
+  },
+  {
+    "name": "Docker Hub",
+    "official_domain": "hub.docker.com",
+    "alt_domains": ["docker.com", "cloud.docker.com"],
+    "keywords": ["docker", "docker hub", "container", "imagem", "image", "registry", "pull", "push", "conta", "senha", "verificação", "verificação", "2fa"],
+    "priority": 75
+  },
+  {
+    "name": "AWS",
+    "official_domain": "aws.amazon.com",
+    "alt_domains": ["console.aws.amazon.com", "amazon.com"],
+    "keywords": ["aws", "amazon web services", "cloud", "ec2", "s3", "lambda", "rds", "cloudformation", "iam", "console", "conta", "senha", "verificação", "verificação", "mfa", "root", "billing", "fatura"],
+    "priority": 85
+  },
+  {
+    "name": "Google Cloud",
+    "official_domain": "cloud.google.com",
+    "alt_domains": ["console.cloud.google.com", "google.com"],
+    "keywords": ["google cloud", "gcp", "cloud", "compute engine", "cloud storage", "bigquery", "kubernetes", "gke", "console", "conta", "senha", "verificação", "verificação", "mfa", "billing", "fatura"],
+    "priority": 85
+  },
+  {
+    "name": "Azure",
+    "official_domain": "azure.microsoft.com",
+    "alt_domains": ["portal.azure.com", "microsoft.com"],
+    "keywords": ["azure", "microsoft azure", "cloud", "virtual machine", "storage", "aks", "functions", "portal", "conta", "senha", "verificação", "verificação", "mfa", "billing", "fatura"],
+    "priority": 85
+  },
+  {
+    "name": "DigitalOcean",
+    "official_domain": "digitalocean.com",
+    "alt_domains": ["cloud.digitalocean.com"],
+    "keywords": ["digitalocean", "digital ocean", "droplet", "kubernetes", "spaces", "database", "cloud", "conta", "senha", "verificação", "verificação", "2fa", "billing", "fatura"],
+    "priority": 80
+  },
+  {
+    "name": "Vercel",
+    "official_domain": "vercel.com",
+    "alt_domains": ["vercel.app", "vercel.sh"],
+    "keywords": ["vercel", "deploy", "nextjs", "next.js", "react", "vercel app", "conta", "senha", "verificação", "verificação", "2fa", "github", "gitlab", "bitbucket"],
+    "priority": 80
+  },
+  {
+    "name": "Netlify",
+    "official_domain": "netlify.com",
+    "alt_domains": ["netlify.app", "app.netlify.com"],
+    "keywords": ["netlify", "deploy", "static", "jamstack", "functions", "edge", "conta", "senha", "verificação", "verificação", "2fa", "github", "gitlab", "bitbucket"],
+    "priority": 75
+  },
+  {
+    "name": "Cloudflare",
+    "official_domain": "cloudflare.com",
+    "alt_domains": ["dash.cloudflare.com", "cloudflare-dns.com", "1.1.1.1"],
+    "keywords": ["cloudflare", "cdn", "dns", "ssl", "tls", "waf", "workers", "pages", "r2", "d1", "conta", "senha", "verificação", "verificação", "2fa", "api token"],
+    "priority": 85
+  }
+]

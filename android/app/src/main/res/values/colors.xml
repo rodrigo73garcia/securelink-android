@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cores primárias (Verde - seguro) -->
+    <color name="primary">#2E7D32</color>
+    <color name="primary_container">#A5D6A7</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="on_primary_container">#1B5E20</color>
+
+    <!-- Cores secundárias (Amarelo/Laranja - suspeito) -->
+    <color name="secondary">#F9A825</color>
+    <color name="secondary_container">#FFF3E0</color>
+    <color name="on_secondary">#000000</color>
+    <color name="on_secondary_container">#E65100</color>
+
+    <!-- Cores terciárias (Azul - info) -->
+    <color name="tertiary">#1976D2</color>
+    <color name="tertiary_container">#BBDEFB</color>
+    <color name="on_tertiary">#FFFFFF</color>
+    <color name="on_tertiary_container">#0D47A1</color>
+
+    <!-- Cores de erro (Vermelho - perigo/bloqueado) -->
+    <color name="error">#C62828</color>
+    <color name="error_container">#FFCDD2</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="on_error_container">#B71C1C</color>
+
+    <!-- Superfícies -->
+    <color name="surface">#FFFBFE</color>
+    <color name="surface_variant">#E0E3DF</color>
+    <color name="surface_container_highest">#D6D9D4</color>
+    <color name="background">#FFFBFE</color>
+    <color name="on_background">#1A1C1A</color>
+    <color name="on_surface">#1A1C1A</color>
+    <color name="on_surface_variant">#444743</color>
+
+    <!-- Outlines -->
+    <color name="outline">#737771</color>
+    <color name="outline_variant">#C3C7C1</color>
+
+    <!-- Cores específicas de veredito -->
+    <color name="verdict_safe">#2E7D32</color>
+    <color name="verdict_safe_light">#A5D6A7</color>
+    <color name="verdict_suspicious">#F9A825</color>
+    <color name="verdict_suspicious_light">#FFF3E0</color>
+    <color name="verdict_blocked">#C62828</color>
+    <color name="verdict_blocked_light">#FFCDD2</color>
+
+    <!-- Transparências -->
+    <color name="transparent">#00000000</color>
+    <color name="black_38">#61000000</color>
+    <color name="white_12">#1FFFFFFF</color>
+</resources>

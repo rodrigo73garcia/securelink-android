@@ -1,0 +1,51 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# Android
+/android/app/build/
+/android/app/release/
+/android/app/debug/
+/android/.gradle/
+/android/local.properties
+/android/gradle/wrapper/gradle-wrapper.jar
+/android/gradlew
+/android/gradlew.bat
+/android/app/src/main/jniLibs/*/libsecurelink_core.so
+/android/app/src/main/assets/blocklist.bloom
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keystore (NUNCA commite!)
+*.keystore
+*.jks
+keystore/
+*.properties
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Coverage
+coverage/
+*.lcov
+
+# Blocklist builder
+/blocklist-builder/target/
+/blocklists/
+*.bloom
