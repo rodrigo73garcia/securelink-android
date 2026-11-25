@@ -194,7 +194,7 @@ object KotlinUrlAnalyzer {
                     else -> scripts.add("outro")
                 }
             }
-            return "Hostname contém caracteres não-Latinos (${scripts.joinToString(", ")}): '${nonAscii.take(5).joinToString("")}' - comum em golpes de homógrafo"
+            return "Hostname contém caracteres não-Latinos (${scripts.joinToString(", ")}): '${nonAscii.take(5)}' - comum em golpes de homógrafo"
         }
 
         // Verifica混合 scripts (latino + não-latino no mesmo domínio)

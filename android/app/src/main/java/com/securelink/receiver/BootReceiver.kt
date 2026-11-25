@@ -12,11 +12,9 @@ import com.securelink.worker.BlocklistUpdateWorker
  */
 class BootReceiver : BroadcastReceiver() {
 
-    private const val TAG = "BootReceiver"
-
     override fun onReceive(context: Context, intent: Intent) {
         if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
-            Log.d(TAG, "Boot completed - reagendando workers")
+            Log.d("BootReceiver", "Boot completed - reagendando workers")
             
             val workManager = WorkManager.getInstance(context)
             val updateRequest = androidx.work.PeriodicWorkRequestBuilder<BlocklistUpdateWorker>(
@@ -35,7 +33,7 @@ class BootReceiver : BroadcastReceiver() {
                 updateRequest
             )
             
-            Log.d(TAG, "Workers reagendados com sucesso")
+            Log.d("BootReceiver", "Workers reagendados com sucesso")
         }
     }
 }
