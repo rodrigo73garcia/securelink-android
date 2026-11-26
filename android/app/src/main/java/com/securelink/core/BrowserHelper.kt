@@ -24,6 +24,9 @@ object BrowserHelper {
     private const val KEY_PROMPTED_ONCE = "default_prompted_once"
     private const val KEY_STATS_CHECKED = "stats_links_checked"
     private const val KEY_STATS_BLOCKED = "stats_links_blocked"
+    private const val KEY_USER_DECLINED = "user_declined_reprompt"
+    private const val KEY_DECLINED_TS = "declined_ts"
+    private const val KEY_LAST_REPROMPT_TS = "last_reprompt_ts"
 
     private val PREFERRED_BROWSER_PACKAGES = listOf(
         "org.mozilla.firefox",
@@ -159,6 +162,39 @@ object BrowserHelper {
     fun getStats(context: Context): Pair<Int, Int> {
         val p = prefs(context)
         return Pair(p.getInt(KEY_STATS_CHECKED, 0), p.getInt(KEY_STATS_BLOCKED, 0))
+    }
+
+    fun markDeclined(context: Context) {
+        prefs(context).edit()
+            .putBoolean(KEY_USER_DECLINED, true)
+            .putLong(KEY_DECLINED_TS, System.currentTimeMillis())
+            .apply()
+    }
+
+    fun hasDeclinedRecently(context: Context, cooldownMs: Long): Boolean {
+        val p = prefs(context)
+        if (!p.getBoolean(KEY_USER_DECLINED, false)) return false
+        val ts = p.getLong(KEY_DECLINED_TS, 0L)
+        return System.currentTimeMillis() - ts < cooldownMs
+    }
+
+    fun clearDeclined(context: Context) {
+        prefs(context).edit()
+            .putBoolean(KEY_USER_DECLINED, false)
+            .putLong(KEY_DECLINED_TS, 0L)
+            .apply()
+    }
+
+    fun markRepromptShown(context: Context) {
+        prefs(context).edit()
+            .putLong(KEY_LAST_REPROMPT_TS, System.currentTimeMillis())
+            .apply()
+    }
+
+    fun shouldShowRepromptDialog(context: Context, minIntervalMs: Long = 6L * 60 * 60 * 1000): Boolean {
+        val p = prefs(context)
+        val last = p.getLong(KEY_LAST_REPROMPT_TS, 0L)
+        return System.currentTimeMillis() - last >= minIntervalMs
     }
 
     /**

@@ -7,8 +7,10 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.securelink.core.NotificationHelper
 import com.securelink.core.SecureLinkEngine
 import com.securelink.worker.BlocklistUpdateWorker
+import com.securelink.worker.DefaultBrowserCheckWorker
 import java.util.concurrent.TimeUnit
 
 class SecureLinkApplication : Application() {
@@ -20,8 +22,13 @@ class SecureLinkApplication : Application() {
         SecureLinkEngine.init(this)
         Log.d("SecureLink", "Engine inicializado. Nativo disponível: ${SecureLinkEngine.isNativeAvailable()}")
 
+        NotificationHelper.ensureChannels(this)
+
         // Agenda atualização periódica de blocklist (a cada 24h)
         scheduleBlocklistUpdate()
+
+        // Agenda verificação periódica se o SecureLink ainda é o navegador padrão (a cada 12h)
+        scheduleDefaultBrowserCheck()
     }
 
     private fun scheduleBlocklistUpdate() {
@@ -40,6 +47,25 @@ class SecureLinkApplication : Application() {
             "blocklist_update",
             ExistingPeriodicWorkPolicy.KEEP,
             updateRequest
+        )
+    }
+
+    private fun scheduleDefaultBrowserCheck() {
+        // WorkManager exige mínimo de 15 minutos; usamos 12h
+        val checkRequest = PeriodicWorkRequestBuilder<DefaultBrowserCheckWorker>(
+            12, TimeUnit.HOURS
+        )
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiresCharging(false)
+                    .build()
+            )
+            .build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            DefaultBrowserCheckWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            checkRequest
         )
     }
 }
