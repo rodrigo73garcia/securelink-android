@@ -12,35 +12,23 @@
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/tvStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SecureLink - Anti-Phishing"
-            android:textSize="20sp"
+            android:text="🛡️ SecureLink"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvUrl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textIsSelectable="true"
-            android:textSize="13sp" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="24dp"
-            android:visibility="gone" />
+            android:layout_marginTop="4dp"
+            android:text="Proteção contra golpes e phishing em links"
+            android:textSize="14sp" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/verdictCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:visibility="gone"
+            android:layout_marginTop="20dp"
             app:cardCornerRadius="16dp">
 
             <LinearLayout
@@ -50,46 +38,89 @@
                 android:padding="20dp">
 
                 <TextView
-                    android:id="@+id/tvVerdictLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvRiskScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tvReasons"
+                    android:id="@+id/tvStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:textSize="15sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSetDefault"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="🔒 Ativar proteção (1 toque)" />
+
+                <TextView
+                    android:id="@+id/tvTargetBrowser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnChangeBrowser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Trocar navegador de destino"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOpenOfficial"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Abrir site oficial"
-            android:visibility="gone" />
+            app:cardCornerRadius="16dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOpenAnyway"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🧪 Testar um link"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etTestUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="Ex: cacaushowbr.com"
+                    android:inputType="textUri"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTestLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Verificar agora" />
+
+                <TextView
+                    android:id="@+id/tvTestResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textSize="14sp"
+                    android:textIsSelectable="true" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tvStats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Abrir mesmo assim"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textSize="13sp" />
 
     </LinearLayout>
 </ScrollView>

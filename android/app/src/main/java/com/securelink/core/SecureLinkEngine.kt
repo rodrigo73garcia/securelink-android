@@ -11,23 +11,31 @@ object SecureLinkEngine {
 
     private const val TAG = "SecureLinkEngine"
     private var nativeAvailable = false
-    private var context: Context? = null
+    private var appContext: Context? = null
 
     init {
         try {
             System.loadLibrary("securelink_core")
             nativeAvailable = true
             Log.d(TAG, "Motor nativo Rust carregado")
-        } catch (e: UnsatisfiedLinkError) {
+        } catch (_: UnsatisfiedLinkError) {
             nativeAvailable = false
-            Log.w(TAG, "Lib nativa não encontrada, usando motor Kotlin puro")
+            Log.d(TAG, "Usando motor Kotlin puro")
         }
     }
 
     fun init(context: Context) {
-        this.context = context
+        this.appContext = context.applicationContext
         if (!nativeAvailable) {
-            KotlinUrlAnalyzer.init(context)
+            KotlinUrlAnalyzer.init(context.applicationContext)
+        }
+    }
+
+    fun ensureInitialized(context: Context) {
+        if (appContext == null) {
+            init(context)
+        } else if (!nativeAvailable) {
+            KotlinUrlAnalyzer.init(context.applicationContext)
         }
     }
 
@@ -52,13 +60,14 @@ object SecureLinkEngine {
         val r = KotlinUrlAnalyzer.analyze(url)
         return AnalysisResult(
             originalUrl = url,
-            finalUrl = url,
+            finalUrl = BrowserHelper.normalizeUrl(url),
             domain = url.substringAfter("://").substringBefore("/").substringBefore(":"),
             punycodeDomain = null,
             riskScore = r.riskScore,
             verdict = r.verdict,
             reasons = r.reasons,
             impersonatedBrand = r.impersonatedBrand,
+            officialDomain = r.officialDomain,
             domainAgeDays = r.domainAgeDays,
             hasHomograph = r.hasHomograph,
             inBlocklist = r.reasons.any { it.code == "blocklist" },
@@ -70,7 +79,7 @@ object SecureLinkEngine {
 
     fun isBlocklisted(domain: String): Boolean {
         return if (nativeAvailable) {
-            try { isBlocklistedNative(domain) } catch (e: Exception) { false }
+            try { isBlocklistedNative(domain) } catch (_: Exception) { false }
         } else {
             KotlinUrlAnalyzer.analyze("https://$domain").reasons.any { it.code == "blocklist" }
         }
@@ -84,14 +93,10 @@ object SecureLinkEngine {
 
     fun isNativeAvailable(): Boolean = nativeAvailable
 
-    // JNI nativos (só funcionam se lib carregou)
     private external fun analyzeUrlNative(url: String): String
     private external fun isBlocklistedNative(domain: String): Boolean
 }
 
-/**
- * Modelos de dados para resultado da análise (lado Kotlin)
- */
 data class AnalysisResult(
     val originalUrl: String,
     val finalUrl: String,
@@ -101,6 +106,7 @@ data class AnalysisResult(
     val verdict: Verdict,
     val reasons: List<Reason>,
     val impersonatedBrand: String?,
+    val officialDomain: String?,
     val domainAgeDays: Int?,
     val hasHomograph: Boolean,
     val inBlocklist: Boolean,
@@ -138,13 +144,20 @@ object AnalysisResultParser {
                 "Blocked" -> Verdict.BLOCKED
                 else -> Verdict.SUSPICIOUS
             },
-            reasons = ffiResult.reasons.map { Reason(it.code, it.messagePt, when (it.severity) {
-                "Info" -> Severity.INFO
-                "Warning" -> Severity.WARNING
-                "Critical" -> Severity.CRITICAL
-                else -> Severity.WARNING
-            }) },
+            reasons = ffiResult.reasons.map {
+                Reason(
+                    it.code,
+                    it.messagePt,
+                    when (it.severity) {
+                        "Info" -> Severity.INFO
+                        "Warning" -> Severity.WARNING
+                        "Critical" -> Severity.CRITICAL
+                        else -> Severity.WARNING
+                    }
+                )
+            },
             impersonatedBrand = ffiResult.impersonatedBrand,
+            officialDomain = null,
             domainAgeDays = ffiResult.domainAgeDays,
             hasHomograph = ffiResult.hasHomograph,
             inBlocklist = ffiResult.inBlocklist,

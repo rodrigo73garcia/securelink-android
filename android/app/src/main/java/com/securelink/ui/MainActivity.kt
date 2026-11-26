@@ -1,123 +1,149 @@
 package com.securelink.ui
 
+import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.securelink.R
+import com.securelink.core.BrowserHelper
 import com.securelink.core.SecureLinkEngine
-import com.securelink.core.AnalysisResult
 import com.securelink.core.Verdict
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
- * Activity principal - atua como navegador padrão para interceptar links.
- * Quando o usuário clica em um link no WhatsApp/Telegram/SMS/Email,
- * o Android abre esta activity primeiro.
+ * Tela inicial do app (aberta pelo ícone).
+ * - Na primeira abertura, detecta o navegador atual e pede 1 toque para virar o padrão.
+ * - Mostra status da proteção, navegador de destino, botão para trocar, e teste manual de link.
  */
 class MainActivity : AppCompatActivity() {
 
-    private val engine = SecureLinkEngine
+    private val requestDefaultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+            refreshStatus()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SecureLinkEngine.ensureInitialized(this)
         setContentView(R.layout.activity_main)
 
-        handleIntent(intent)
+        // Na primeira vez, detecta o navegador padrão ANTES de pedir pra virar padrão
+        if (!BrowserHelper.hasPromptedOnce(this)) {
+            BrowserHelper.detectAndSavePreviousDefaultBrowser(this)
+        }
+
+        findViewById<Button>(R.id.btnSetDefault).setOnClickListener {
+            promptSetAsDefault()
+        }
+
+        findViewById<Button>(R.id.btnChangeBrowser).setOnClickListener {
+            showBrowserPicker()
+        }
+
+        findViewById<Button>(R.id.btnTestLink).setOnClickListener {
+            val input = findViewById<EditText>(R.id.etTestUrl).text.toString().trim()
+            if (input.isNotEmpty()) {
+                testLink(input)
+            }
+        }
+
+        refreshStatus()
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        handleIntent(intent)
+    override fun onResume() {
+        super.onResume()
+        refreshStatus()
     }
 
-    private fun handleIntent(intent: Intent) {
-        val action = intent.action
-        val data = intent.data
+    private fun refreshStatus() {
+        val isDefault = BrowserHelper.isSecureLinkDefaultBrowser(this)
+        val tvStatus = findViewById<TextView>(R.id.tvStatus)
+        val btnSetDefault = findViewById<Button>(R.id.btnSetDefault)
+        val (checked, blocked) = BrowserHelper.getStats(this)
 
-        if (action == Intent.ACTION_VIEW && data != null) {
-            val url = data.toString()
-            Log.d("MainActivity", "Link interceptado: $url")
-            analyzeAndShow(url)
+        if (isDefault) {
+            tvStatus.text = "🛡️ Proteção ATIVA\nTodo link que você clicar (WhatsApp, Telegram, SMS, e-mail) passa pela verificação do SecureLink antes de abrir no seu navegador."
+            btnSetDefault.text = "✅ SecureLink já é o navegador padrão"
+            btnSetDefault.isEnabled = false
         } else {
-            showHomeScreen()
+            tvStatus.text = "⚠️ Proteção INATIVA\nToque no botão abaixo para ativar com 1 toque."
+            btnSetDefault.text = "🔒 Ativar proteção (1 toque)"
+            btnSetDefault.isEnabled = true
         }
+
+        val target = BrowserHelper.getSavedTargetBrowser(this)
+        findViewById<TextView>(R.id.tvTargetBrowser).text =
+            if (target != null) "🌐 Seus links abrem no: ${target.label}" else "🌐 Nenhum navegador detectado ainda"
+
+        findViewById<TextView>(R.id.tvStats).text =
+            "📊 Links verificados: $checked  •  Golpes bloqueados: $blocked"
     }
 
-    private fun analyzeAndShow(url: String) {
-        lifecycleScope.launch {
-            val result = engine.analyze(url)
-            runOnUiThread { renderVerdict(result, url) }
-        }
-    }
-
-    private fun renderVerdict(result: AnalysisResult, originalUrl: String) {
-        val tvVerdict = findViewById<android.widget.TextView>(R.id.tvVerdictLabel)
-        val tvUrl = findViewById<android.widget.TextView>(R.id.tvUrl)
-        val tvScore = findViewById<android.widget.TextView>(R.id.tvRiskScore)
-        val tvReasons = findViewById<android.widget.TextView>(R.id.tvReasons)
-        val btnOpen = findViewById<android.widget.Button>(R.id.btnOpenAnyway)
-        val btnOfficial = findViewById<android.widget.Button>(R.id.btnOpenOfficial)
-        val card = findViewById<android.view.View>(R.id.verdictCard)
-
-        val (color, emoji, label) = when (result.verdict) {
-            Verdict.SAFE -> Triple(0xFF2E7D32.toInt(), "✅", "SEGURO")
-            Verdict.SUSPICIOUS -> Triple(0xFFF9A825.toInt(), "⚠️", "SUSPEITO")
-            Verdict.BLOCKED -> Triple(0xFFC62828.toInt(), "🚫", "BLOQUEADO - PERIGO!")
-        }
-
-        card.setBackgroundColor(color)
-        tvVerdict.text = "$emoji $label"
-        tvVerdict.setTextColor(0xFFFFFFFF.toInt())
-        tvUrl.text = originalUrl
-        tvScore.text = "Risco: ${result.riskScore}/100"
-
-        val reasonsText = result.reasons.joinToString("\n") { "• ${it.messagePt}" }
-        tvReasons.text = reasonsText
-
-        btnOpen.setOnClickListener { openInRealBrowser(originalUrl) }
-
-        if (result.impersonatedBrand != null) {
-            btnOfficial.visibility = View.VISIBLE
-            btnOfficial.setOnClickListener { openOfficialSite(result.impersonatedBrand!!) }
-        } else {
-            btnOfficial.visibility = View.GONE
-        }
-
-        card.visibility = View.VISIBLE
-    }
-
-    private fun openInRealBrowser(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    private fun promptSetAsDefault() {
+        // Salva o navegador anterior antes de pedir para mudar o padrão
+        BrowserHelper.detectAndSavePreviousDefaultBrowser(this)
+        BrowserHelper.markPromptedOnce(this)
         try {
-            startActivity(intent)
+            requestDefaultLauncher.launch(BrowserHelper.createRequestDefaultBrowserIntent(this))
         } catch (e: Exception) {
-            startActivity(Intent.createChooser(intent, "Abrir com"))
+            try {
+                startActivity(BrowserHelper.createRequestDefaultBrowserIntent(this))
+            } catch (_: Exception) {
+            }
         }
-        finish()
     }
 
-    private fun openOfficialSite(brand: String) {
-        val officialUrl = when (brand.lowercase()) {
-            "cacau show" -> "https://cacaushow.com.br"
-            "nubank" -> "https://nubank.com.br"
-            "apple" -> "https://apple.com"
-            "google" -> "https://google.com"
-            "microsoft" -> "https://microsoft.com"
-            "amazon" -> "https://amazon.com.br"
-            "mercado livre" -> "https://mercadolivre.com.br"
-            else -> "https://www.google.com/search?q=$brand+site+oficial"
+    private fun showBrowserPicker() {
+        val browsers = BrowserHelper.getInstalledBrowsers(this)
+        if (browsers.isEmpty()) {
+            AlertDialog.Builder(this)
+                .setTitle("Nenhum navegador encontrado")
+                .setMessage("Instale um navegador (Chrome, Firefox, Brave, etc.) para que o SecureLink possa abrir os links nele.")
+                .setPositiveButton("OK", null)
+                .show()
+            return
         }
-        openInRealBrowser(officialUrl)
+
+        val names = browsers.map { it.label }.toTypedArray()
+        val current = BrowserHelper.getSavedTargetBrowser(this)
+        val checkedItem = browsers.indexOfFirst { it.packageName == current?.packageName }.coerceAtLeast(0)
+
+        AlertDialog.Builder(this)
+            .setTitle("Escolha seu navegador")
+            .setSingleChoiceItems(names, checkedItem) { dialog, which ->
+                BrowserHelper.saveTargetBrowser(
+                    this,
+                    browsers[which].packageName,
+                    browsers[which].label
+                )
+                refreshStatus()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
-    private fun showHomeScreen() {
-        setContentView(R.layout.activity_main)
-        findViewById<android.widget.TextView>(R.id.tvStatus)?.text = "SecureLink ativo ✅\n\nDefina como navegador padrão em:\nConfigurações → Apps → Navegador padrão → SecureLink\n\nDepois clique em qualquer link no WhatsApp e veja a verificação!"
+    private fun testLink(url: String) {
+        val etResult = findViewById<TextView>(R.id.tvTestResult)
+        etResult.text = "Analisando..."
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.Default) {
+                SecureLinkEngine.analyze(url)
+            }
+            val (emoji, label) = when (result.verdict) {
+                Verdict.SAFE -> "✅" to "SEGURO (${result.riskScore}/100)"
+                Verdict.SUSPICIOUS -> "⚠️" to "SUSPEITO (${result.riskScore}/100)"
+                Verdict.BLOCKED -> "🚫" to "BLOQUEADO (${result.riskScore}/100)"
+            }
+            val reasons = result.reasons.joinToString("\n") { "• ${it.messagePt}" }
+            etResult.text = "$emoji $label\n\n$reasons"
+        }
     }
 }

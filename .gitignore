@@ -49,3 +49,5 @@ coverage/
 *.bloom
 *.so
 *.a
+downloads/
+*.apk

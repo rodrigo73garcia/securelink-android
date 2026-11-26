@@ -17,7 +17,7 @@ class BlocklistUpdateWorker(
 
     companion object {
         private const val TAG = "BlocklistUpdateWorker"
-        private const val BLOCKLIST_URL = "https://raw.githubusercontent.com/rodrigo73garcia/securelink-android/main/blocklists/domains.txt"
+        private const val BLOCKLIST_URL = "https://raw.githubusercontent.com/rodrigo73garcia/securelink-android/master/blocklists/domains.txt"
     }
 
     override suspend fun doWork(): Result {
