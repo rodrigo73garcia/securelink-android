@@ -2,11 +2,8 @@ package com.securelink.ui
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import com.securelink.core.BrowserHelper
 import com.securelink.core.SecureLinkEngine
 import com.securelink.core.Verdict
@@ -25,13 +22,6 @@ class LinkInterceptorActivity : android.app.Activity() {
         private const val TAG = "LinkInterceptor"
         const val EXTRA_RESULT = "extra_analysis_result"
     }
-
-    private val requestDefaultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
-            // Independente do resultado, finaliza para não ficar parado na tela
-            finish()
-            overridePendingTransition(0, 0)
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
