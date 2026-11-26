@@ -11,9 +11,23 @@ android {
         applicationId = "com.securelink"
         minSdk = 24
         targetSdk = 34
-        versionCode = 3
-        versionName = "0.3.0"
+        versionCode = 4
+        versionName = "0.3.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        // Keystore fixa de desenvolvimento commitada no repo (PKCS12).
+        // Garante a MESMA assinatura em todos os builds (CI e local),
+        // permitindo update por cima de versões anteriores.
+        // NUNCA use essa chave em produção/Play Store.
+        create("dev") {
+            storeFile = file("keystore/securelink-dev.p12")
+            storePassword = "securelink"
+            keyAlias = "securelink"
+            keyPassword = "securelink"
+            storeType = "PKCS12"
+        }
     }
 
     buildTypes {
@@ -24,11 +38,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("dev")
         }
         debug {
             isMinifyEnabled = false
             isDebuggable = true
+            signingConfig = signingConfigs.getByName("dev")
         }
     }
 
@@ -50,15 +65,6 @@ android {
             excludes += "/META-INF/*"
         }
     }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "keystore/release.keystore")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-            keyAlias = System.getenv("KEY_ALIAS") ?: ""
-            keyPassword = System.getenv("KEY_PASSWORD") ?: ""
-        }
-    }
 }
 
 dependencies {
@@ -77,7 +83,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.json:json:20231013")
 
-    // WorkManager (atualização blocklist)
+    // WorkManager (atualização blocklist + check de navegador padrão)
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // DataStore

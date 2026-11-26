@@ -26,10 +26,15 @@ Cargo.lock
 .DS_Store
 Thumbs.db
 
-# Keystore (NUNCA commite!)
+# Keystore (NUNCA commite keystore de produção!)
 *.keystore
 *.jks
 keystore/
+# EXCETO a keystore de DEV fixa usada para assinar todos os builds (permite update entre versões)
+!android/app/keystore/
+!android/app/keystore/securelink-dev.p12
+*.p12
+!android/app/keystore/securelink-dev.p12
 
 # Logs
 *.log
